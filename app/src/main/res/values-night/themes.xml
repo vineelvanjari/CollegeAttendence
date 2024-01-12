@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CollegeAttendence" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize your dark theme here. -->
+<!--
+        <item name="colorPrimary">@color/orangelight</item>
+-->
+        <item name="colorPrimaryDark">@color/orangelight</item>
+        <item name="android:colorAccent">@color/orangelight</item>
+    </style>
+</resources>
