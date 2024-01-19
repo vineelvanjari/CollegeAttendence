@@ -1,18 +1,14 @@
 package com.vv.collegeattendence;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,6 +17,7 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     Context context;
     ArrayList<AttendenceListModel> arrayList;
     String date;
+    public ArrayList<CheckBoxModel> CheckBoxArrayList = new ArrayList<>();
 
     public AttendenceRecycleAdapter(Context context, ArrayList<AttendenceListModel> arrayList,String date){
         this.context=context;
@@ -49,9 +46,9 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             if(holder.checkBox.isChecked()){
                 flag=true;
             }
-            SubjectNamesDB subjectNamesDB = new SubjectNamesDB(context);
-            subjectNamesDB.inserDateValue(arrayList.get(position).id,date,flag);
-
+            Log.d("flag",arrayList.get(position).id+""+flag);
+            CheckBoxModel checkBoxModel = new CheckBoxModel(arrayList.get(position).id,flag);
+            CheckBoxArrayList.add(checkBoxModel);
         });
     }
 

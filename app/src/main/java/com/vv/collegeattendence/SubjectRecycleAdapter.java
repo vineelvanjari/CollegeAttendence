@@ -1,7 +1,9 @@
 package com.vv.collegeattendence;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -24,7 +26,8 @@ import java.util.Date;
 
 public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAdapter.ViewHolder> {
     Context context;
-    ArrayList<SubjectModel> arrayList;
+    ArrayList<SubjectModel> arrayList,subjectModel;
+
     public SubjectRecycleAdapter(Context context, ArrayList<SubjectModel> arrayList){
         this.context=context;
         this.arrayList=arrayList;
@@ -39,9 +42,9 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder,int position) {
-        holder.subjectNameTV.setText(arrayList.get(position).subjectName);
-        holder.yearTV.setText(arrayList.get(position).year);
-        holder.sectionTV.setText(arrayList.get(position).section);
+        holder.subjectNameTV.setText(arrayList.get(position).subjectName.replace("$"," "));
+        holder.yearTV.setText(arrayList.get(position).semister.replace("$"," "));
+        holder.sectionTV.setText(arrayList.get(position).section.replace("$"," "));
         holder.subjectCatdView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,8 +52,6 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
                 Dialog dialog = new Dialog(context,R.style.Dialogbox_border);
                 dialog.setContentView(R.layout.date_dialog_box);
                 EditText Date1 = dialog.findViewById(R.id.selectDate);
-
-
                 Date currentDate = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yy h:mm:ss a"); // Add "ss" for seconds
                 String formattedDateTime = dateFormat.format(currentDate);
@@ -73,23 +74,27 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
                     datePickerDialog.show();
                 });
                 dialog.findViewById(R.id.next).setOnClickListener(a ->{
-                    SubjectNamesDB subjectNamesDB = new SubjectNamesDB(context);
-                    if(!subjectNamesDB.checkColumnName("_"+Date1.getText().toString()))
+                    DataBase dataBase = new DataBase(context);
+                    String TABLE_NAME=arrayList.get(position).subjectName+"_"+arrayList.get(position).semister+"_"+arrayList.get(position).section;
+
+                    if(!dataBase.checkColumnName(TABLE_NAME,"_"+Date1.getText().toString()))
                     {
-                        subjectNamesDB.inserDate("_"+Date1.getText().toString());
+                        dataBase.inserDate(TABLE_NAME,"_"+Date1.getText().toString());
                     }
                     Intent intent = new Intent(context, AttendenceList.class);
                     intent.putExtra("date",Date1.getText().toString());
-                    intent.putExtra("subjectName",arrayList.get(position).subjectName);
-                    intent.putExtra("semister",arrayList.get(position).year);
-                    intent.putExtra("section",arrayList.get(position).section);
-                    startActivity(context,intent,null);
+                    intent.putExtra("tableName",TABLE_NAME);
+                    ((Activity) context).startActivityForResult(intent,1);
+                    dialog.dismiss();
+                    ((Activity) context).finish();
                 });
                 dialog.show();
             }
+
         });
 
     }
+
 
     @Override
     public int getItemCount() {

@@ -11,11 +11,4 @@ public class AttendenceListModel {
         this.id=id;
         this.attendence=attendence;
     }
-    AttendenceListModel(String pinNo){
-        this.pinNo = pinNo;
-    }
-    AttendenceListModel(int id,boolean attendence){
-        this.id=id;
-    }
-
 }
