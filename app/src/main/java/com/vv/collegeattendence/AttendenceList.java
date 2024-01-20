@@ -112,8 +112,8 @@ public class AttendenceList extends AppCompatActivity{
                             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
                             ArrayList<StringBuffer> str =database.downloadData(TABLE_NAME);
-
-                            File file = new File(folder, TABLE_NAME+".csv");
+                            String fileName=subject+"_"+semister+"_"+section+".csv";
+                            File file = new File(folder,fileName);
                             writeTextData(file, "");
 
                             if(file.exists()) {
@@ -124,7 +124,7 @@ public class AttendenceList extends AppCompatActivity{
                                     }
 
                                     writeTextData(file, data);
-                                    Toast.makeText(AttendenceList.this, "Upload of Customer Details Done in :\n" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AttendenceList.this, fileName+" Downloaded", Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                     Toast.makeText(AttendenceList.this, "No data found to upload...", Toast.LENGTH_SHORT).show();
