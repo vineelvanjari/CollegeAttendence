@@ -1,22 +1,33 @@
 package com.vv.collegeattendence;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AttendenceList extends AppCompatActivity{
     AttendenceRecycleAdapter adapter;
     ArrayList<AttendenceListModel> arrayList;
+    private final int EXTERNAL_STORAGE_PERMISSION_CODE = 23;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +101,36 @@ public class AttendenceList extends AppCompatActivity{
                             recyclerView.setAdapter(adapter);
                         } else if (id==R.id.downloadAttendence) {
 
-                        }
+                            if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
+                                    ContextCompat.checkSelfPermission(AttendenceList.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                                    ContextCompat.checkSelfPermission(AttendenceList.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(AttendenceList.this,
+                                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        EXTERNAL_STORAGE_PERMISSION_CODE);
+                            }
 
+                            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+                            ArrayList<StringBuffer> str =database.downloadData(TABLE_NAME);
+
+                            File file = new File(folder, TABLE_NAME+".csv");
+                            writeTextData(file, "");
+
+                            if(file.exists()) {
+                                if (str.size() > 0) {
+                                    String data = "";
+                                    for (StringBuffer i:str) {
+                                        data = data + i + "\n";
+                                    }
+
+                                    writeTextData(file, data);
+                                    Toast.makeText(AttendenceList.this, "Upload of Customer Details Done in :\n" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                    Toast.makeText(AttendenceList.this, "No data found to upload...", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(AttendenceList.this, "File cannot be created!", Toast.LENGTH_SHORT).show();
+                        }
 
                         return true;
                     }
@@ -111,5 +150,22 @@ public class AttendenceList extends AppCompatActivity{
     public void backPress(){
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+    private void writeTextData(File file, String data) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(data.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

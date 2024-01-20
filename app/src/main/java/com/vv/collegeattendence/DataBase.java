@@ -122,4 +122,42 @@ public class DataBase extends SQLiteOpenHelper {
         cv.put(date,true);
         dbw.update(TABLE_NAME,cv,null,null);
     }
+    public ArrayList<StringBuffer> downloadData(String TABLE_NAME){
+        ArrayList<StringBuffer> studentList = new ArrayList<>();
+        Cursor cursorColumn = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
+        cursorColumn.moveToFirst();
+        cursorColumn.moveToNext();
+        StringBuffer columnNames = new StringBuffer();
+        do{
+                Log.d("columnCount",cursorColumn.getString(1)+",");
+                columnNames.append(cursorColumn.getString(1)).append(",");
+
+        }while (cursorColumn.moveToNext());
+        Log.d("columnCount",columnNames.toString());
+        studentList.add(columnNames);
+        Cursor cursor = dbw.rawQuery("select * from "+TABLE_NAME,null);
+        cursor.moveToFirst();
+       do {
+           StringBuffer str = new StringBuffer();
+           for (int i=1;i<cursor.getColumnCount();i++){
+               if(i>3){
+                   if(cursor.getString(i).equals("1")){
+                       str.append("present,");
+                   }
+                   else if(cursor.getString(i).equals("0")) {
+                       str.append("absent,");
+                   }
+                   else {
+                       str.append(cursor.getString(i)).append(",");
+                   }
+               }
+               else {
+                   str.append(cursor.getString(i)).append(",");
+               }
+           }
+           studentList.add(str);
+           Log.d("columnCount",str.toString());
+       }while (cursor.moveToNext());
+     return studentList;
+    }
 }

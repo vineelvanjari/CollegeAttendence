@@ -53,9 +53,9 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
                 dialog.setContentView(R.layout.date_dialog_box);
                 EditText Date1 = dialog.findViewById(R.id.selectDate);
                 Date currentDate = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yy h:mm:ss a"); // Add "ss" for seconds
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy h:mm:ss a"); // Add "ss" for seconds
                 String formattedDateTime = dateFormat.format(currentDate);
-                String date1 = formattedDateTime.substring(0, 8);
+                String date1 = formattedDateTime.substring(0, 10);
                 Date1.setText(date1);
                 Date1.setOnClickListener(va ->{
                     final Calendar calendar = Calendar.getInstance();
