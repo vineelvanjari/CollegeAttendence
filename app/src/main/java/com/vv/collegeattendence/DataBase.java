@@ -69,7 +69,7 @@ public class DataBase extends SQLiteOpenHelper {
         return  arrayList;
     }
    public ArrayList<AttendenceListModel> getAttendenceList(String TABLE_NAME,String date){
-        Cursor cursor= dbr.rawQuery("select pinNo,sNo,id,"+date+" from "+TABLE_NAME,null);
+        Cursor cursor= dbr.rawQuery("select pinNo,sNo,id,"+date+" ,"+STUDENT_NAME+" from "+TABLE_NAME,null);
         ArrayList<AttendenceListModel> arrayList = new ArrayList<>();
         cursor.moveToFirst();
         if(cursor.getCount()>0){
@@ -78,7 +78,8 @@ public class DataBase extends SQLiteOpenHelper {
                 String pinNO=cursor.getString(0);
                 String sno=cursor.getString(1);
                 int attendenceValue =cursor.getInt(3);
-                AttendenceListModel attendenceListModel = new AttendenceListModel(pinNO,sno,id,attendenceValue);
+                String name = cursor.getString(4);
+                AttendenceListModel attendenceListModel = new AttendenceListModel(name,pinNO,sno,id,attendenceValue);
                 arrayList.add(attendenceListModel);
             }while (cursor.moveToNext());
         }

@@ -69,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 Spinner section = dialog.findViewById(R.id.section);
                 ArrayList<String> semisterAL = new ArrayList<>();
                 semisterAL.add("1st semister");
-                semisterAL.add("2st semister");
-                semisterAL.add("3st semister");
-                semisterAL.add("4st semister");
-                semisterAL.add("5st semister");
-                semisterAL.add("6st semister");
+                semisterAL.add("2nd semister");
+                semisterAL.add("3rd semister");
+                semisterAL.add("4th semister");
+                semisterAL.add("5th semister");
+                semisterAL.add("6th semister");
                 ArrayAdapter<String> semisterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, semisterAL);
                 semisterSpinner.setAdapter(semisterAdapter);
                 ArrayList<String> sectionAL = new ArrayList<>();
@@ -114,65 +114,75 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        try {
 
-        if (requestCode == REQUEST_CSV_FILE && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                try {
-                    assert uri != null;
-                    String fileType = getContentResolver().getType(uri);
-                    Log.d("csv",fileType);
-                    if ("text/comma-separated-values".equals(fileType)) {
+            if (requestCode == REQUEST_CSV_FILE && resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Uri uri = data.getData();
+                    try {
+                        assert uri != null;
+                        String fileType = getContentResolver().getType(uri);
+                        Log.d("csv",fileType);
+                        if ("text/comma-separated-values".equals(fileType)) {
 
-                        // Open an InputStream to read the selected CSV file
-                        InputStream inputStream = getContentResolver().openInputStream(uri);
-                        // Read the contents of the CSV file
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                            // Open an InputStream to read the selected CSV file
+                            InputStream inputStream = getContentResolver().openInputStream(uri);
+                            // Read the contents of the CSV file
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-                        String line;
-                        reader.readLine();   //read a row to skip the column names in file
-                        if(!dataBase.isTableExist(TABLE_NAME)){
-                            dataBase.createTable(TABLE_NAME);
-                            while ((line = reader.readLine()) != null) {
-                                insertStudentData(line);
+                            String line;
+                            reader.readLine();   //read a row to skip the column names in file
+                            if(!dataBase.isTableExist(TABLE_NAME)){
+                                dataBase.createTable(TABLE_NAME);
+                                while ((line = reader.readLine()) != null) {
+                                    insertStudentData(line);
+                                }
                             }
+                            else {
+                                Toast.makeText(this, "Subject Already Existed ", Toast.LENGTH_SHORT).show();
+                            }
+                            // Close the reader and input stream
+                            reader.close();
+                            assert inputStream != null;
+                            inputStream.close();
                         }
-                        else {
-                            Toast.makeText(this, "Subject Already Existed ", Toast.LENGTH_SHORT).show();
-                        }
-                        // Close the reader and input stream
-                        reader.close();
-                        assert inputStream != null;
-                        inputStream.close();
+                        else
+                            Toast.makeText(this, "File type should be .csv", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    else
-                        Toast.makeText(this, "File type should be .csv", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else Toast.makeText(this, "No Data available in file!", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, "No Data available in file!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        catch (Exception e){
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void insertStudentData(String stuData) {
-        StringTokenizer studentData = new StringTokenizer(stuData, ",");
-        ArrayList<String> studentDataDownload = new ArrayList<>();
+      try{
+          StringTokenizer studentData = new StringTokenizer(stuData, ",");
+          ArrayList<String> studentDataDownload = new ArrayList<>();
 
-        StringBuilder str = new StringBuilder();
-        while (studentData.hasMoreTokens()) {
-            String data = studentData.nextToken();
-            studentDataDownload.add(data);
-            str.append(data).append(" ");
-        }
-        String sNo=studentDataDownload.get(0);
-        String name = studentDataDownload.get(1);
-        String pinNO = studentDataDownload.get(2);
+          StringBuilder str = new StringBuilder();
+          while (studentData.hasMoreTokens()) {
+              String data = studentData.nextToken();
+              studentDataDownload.add(data);
+              str.append(data).append(" ");
+          }
+          String sNo=studentDataDownload.get(0);
+          String name = studentDataDownload.get(1);
+          String pinNO = studentDataDownload.get(2);
 
-        if(!dataBase.insertSubject(TABLE_NAME,sNo,name,pinNO))
-            Toast.makeText(this, "added failed", Toast.LENGTH_SHORT).show();
-        arrayList=dataBase.getSubjects();
-        adapter = new SubjectRecycleAdapter(this,arrayList);
-        recyclerView.setAdapter(adapter);
+          if(!dataBase.insertSubject(TABLE_NAME,sNo,name,pinNO))
+              Toast.makeText(this, "added failed", Toast.LENGTH_SHORT).show();
+          arrayList=dataBase.getSubjects();
+          adapter = new SubjectRecycleAdapter(this,arrayList);
+          recyclerView.setAdapter(adapter);
+      }
+      catch (Exception e){
+          Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+      }
     }
 
     @Override
