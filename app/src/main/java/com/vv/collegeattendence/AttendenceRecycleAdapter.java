@@ -20,11 +20,14 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     ArrayList<AttendenceListModel> arrayList;
     String date;
     public ArrayList<CheckBoxModel> CheckBoxArrayList = new ArrayList<>();
-
-    public AttendenceRecycleAdapter(Context context, ArrayList<AttendenceListModel> arrayList,String date){
+    public String checked;
+    boolean loopOnceTrue=true;
+    boolean loopOnceFalse=true;
+    public AttendenceRecycleAdapter(Context context, ArrayList<AttendenceListModel> arrayList,String date,String checked){
         this.context=context;
         this.arrayList=arrayList;
         this.date=date;
+        this.checked=checked;
     }
     @NonNull
     @Override
@@ -53,11 +56,32 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             stringBuilder.insert(15,"\n");
             holder.studentName.setText(stringBuilder.toString());
         }
-        if((arrayList.get(position).attendence)==1){
+        if(checked.equals("checkAll")){
             holder.checkBox.setChecked(true);
-        }
-        else {
+            if(loopOnceTrue){
+                for(int i=0;i<=arrayList.size();i++){
+                    CheckBoxModel checkBoxModel = new CheckBoxModel(i,true);
+                    CheckBoxArrayList.add(checkBoxModel);
+                }
+                loopOnceTrue=false;
+            }
+
+        } else if (checked.equals("unCheckAll")) {
             holder.checkBox.setChecked(false);
+            if(loopOnceFalse){
+                for (int i = 0; i <= arrayList.size(); i++) {
+                    CheckBoxModel checkBoxModel = new CheckBoxModel(i, false);
+                    CheckBoxArrayList.add(checkBoxModel);
+                }
+                loopOnceFalse=false;
+            }
+        } else if (checked.equals("default")) {
+            if((arrayList.get(position).attendence)==1){
+                holder.checkBox.setChecked(true);
+            }
+            else {
+                holder.checkBox.setChecked(false);
+            }
         }
         holder.checkBox.setOnClickListener(v ->{
             boolean flag=false;

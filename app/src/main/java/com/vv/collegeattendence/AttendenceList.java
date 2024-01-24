@@ -54,7 +54,7 @@ public class AttendenceList extends AppCompatActivity{
             DataBase database = new DataBase(this);
             arrayList= database.getAttendenceList(TABLE_NAME,finalDate);
             if(arrayList.size()>0){
-                adapter  = new AttendenceRecycleAdapter(this,arrayList,date);
+                adapter  = new AttendenceRecycleAdapter(this,arrayList,date,"default");
                 recyclerView.setAdapter(adapter);
             }
             findViewById(R.id.exitbutton).setOnClickListener( v-> {
@@ -95,11 +95,16 @@ public class AttendenceList extends AppCompatActivity{
                             });
                             builder.show();
                         } else if (id==R.id.checkAll) {
-                            database.setAllChecked(TABLE_NAME,finalDate);
-                            arrayList=database.getAttendenceList(TABLE_NAME,finalDate);
-                            adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date);
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll");
                             recyclerView.setAdapter(adapter);
-                        } else if (id==R.id.downloadAttendence) {
+
+                        }
+                        else if (id==R.id.uncheckAll) {
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll");
+                            recyclerView.setAdapter(adapter);
+
+                        }
+                        else if (id==R.id.downloadAttendence) {
 
                             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
                                     ContextCompat.checkSelfPermission(AttendenceList.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&

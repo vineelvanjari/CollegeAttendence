@@ -5,7 +5,11 @@
     android:title="Delete" />
     <item
         android:id="@+id/checkAll"
-        android:title="Check All"
+        android:title="check All"
+        />
+    <item
+        android:id="@+id/uncheckAll"
+        android:title="uncheck All"
         />
     <item
         android:id="@+id/downloadAttendence"
