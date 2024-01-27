@@ -41,6 +41,10 @@
      </com.google.android.material.textfield.TextInputLayout>
 
  </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </LinearLayout>
     <Button
         android:id="@+id/next"
         android:layout_height="@dimen/_50sdp"

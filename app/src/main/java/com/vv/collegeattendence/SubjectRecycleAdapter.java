@@ -1,6 +1,9 @@
 package com.vv.collegeattendence;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import static android.app.Activity.RESULT_OK;
+import static android.media.CamcorderProfile.get;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.app.Activity;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -48,47 +52,10 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
         holder.subjectCatdView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Dialog dialog = new Dialog(context,R.style.Dialogbox_border);
-                dialog.setContentView(R.layout.date_dialog_box);
-                EditText Date1 = dialog.findViewById(R.id.selectDate);
-                Date currentDate = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy h:mm:ss a"); // Add "ss" for seconds
-                String formattedDateTime = dateFormat.format(currentDate);
-                String date1 = formattedDateTime.substring(0, 10);
-                Date1.setText(date1);
-                Date1.setOnClickListener(va ->{
-                    final Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(
-                            context,
-                            (view, year1, month1, dayOfMonth) -> {
-                                String date = String.format("%02d_%02d_%04d", dayOfMonth, month1 + 1, year1);
-                                Date1.setText(date);
-                            },
-                            year, month, day);
-
-                    datePickerDialog.show();
-                });
-                dialog.findViewById(R.id.next).setOnClickListener(a ->{
-                    DataBase dataBase = new DataBase(context);
-                    String TABLE_NAME=arrayList.get(position).subjectName+"_"+arrayList.get(position).semister+"_"+arrayList.get(position).section;
-
-                    if(!dataBase.checkColumnName(TABLE_NAME,"_"+Date1.getText().toString()))
-                    {
-                        dataBase.inserDate(TABLE_NAME,"_"+Date1.getText().toString());
-                    }
-                    Intent intent = new Intent(context, AttendenceList.class);
-                    intent.putExtra("date",Date1.getText().toString());
-                    intent.putExtra("tableName",TABLE_NAME);
-                    ((Activity) context).startActivityForResult(intent,1);
-                    dialog.dismiss();
-                    ((Activity) context).finish();
-                });
-                dialog.show();
+                String TABLE_NAME=arrayList.get(position).subjectName+"_"+arrayList.get(position).semister+"_"+arrayList.get(position).section;
+                BottomSheetDialogFrg bottomSheetDialogFrg = new  BottomSheetDialogFrg(context,TABLE_NAME);
+                FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
+                bottomSheetDialogFrg.show(fragmentManager, bottomSheetDialogFrg.getTag());
             }
 
         });
