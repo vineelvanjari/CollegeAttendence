@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
@@ -90,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
                     subjectName=editText.getText().toString().trim();
                     if(subjectName.isEmpty()){
                         Toast.makeText (this, "Enter Subject Name", Toast.LENGTH_SHORT).show();
-                    }else
+                    } else if (isFirstCharDigit(subjectName)) {
+                        Toast.makeText(this, "1st number shouldn't be a number", Toast.LENGTH_SHORT).show();
+                    } else
                     {
                         subjectName=subjectName.replaceAll("\\s+", "\\$");
                         semisterString =semisterString.replaceAll("\\s+", "\\$");
@@ -191,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
             onBackPressed();
         return super.onOptionsItemSelected(item);
     }
-
+    private static boolean isFirstCharDigit(String input) {
+        // Check if the string is not empty and the first character is a digit
+        return !input.isEmpty() && Character.isDigit(input.charAt(0));
+    }
 
 }
