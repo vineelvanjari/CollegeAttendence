@@ -17,17 +17,20 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:text="Select Date"
+         android:layout_weight="1"
          android:textStyle="bold"
          android:layout_marginRight="@dimen/_10sdp"
          android:textSize="@dimen/_14sdp"
          />
      <com.google.android.material.textfield.TextInputLayout
          android:layout_width="wrap_content"
+         android:layout_weight="1"
          android:layout_height="wrap_content">
          <EditText
              android:id="@+id/selectDate"
-             android:layout_width="wrap_content"
+             android:layout_width="match_parent"
              android:layout_height="wrap_content"
+             android:textAlignment="center"
              android:text="DATE"
              android:textStyle="bold"
              android:textSize="@dimen/_14sdp"
@@ -42,6 +45,7 @@
 
  </LinearLayout>
     <LinearLayout
+        android:id="@+id/start_time_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
         android:gravity="center"
@@ -87,6 +91,7 @@
 
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/end_time_linear_layout"
         android:paddingHorizontal="@dimen/_10sdp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"

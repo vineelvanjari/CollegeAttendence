@@ -117,11 +117,6 @@ public class DataBase extends SQLiteOpenHelper {
     public void deleteTable(String TABLE_NAME){
         dbw.execSQL("drop table "+TABLE_NAME);
     }
-    public void setAllChecked(String TABLE_NAME,String date){
-        ContentValues cv = new ContentValues();
-        cv.put(date,true);
-        dbw.update(TABLE_NAME,cv,null,null);
-    }
     public ArrayList<StringBuffer> downloadData(String TABLE_NAME){
         ArrayList<StringBuffer> studentList = new ArrayList<>();
         Cursor cursorColumn = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
@@ -160,4 +155,32 @@ public class DataBase extends SQLiteOpenHelper {
        }while (cursor.moveToNext());
      return studentList;
     }
+    public  ArrayList<AttendencePerDayModel> checkColumnList(String TABLE_NAME,String date){
+        ArrayList<AttendencePerDayModel> columns= new ArrayList<>();
+        try{
+           Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
+           cursor.moveToFirst();
+           if(cursor.getCount()>0){
+               while (cursor.moveToNext()) {
+                   String columnNameInTable = cursor.getString(1); // Index 1: column name
+                   if (columnNameInTable.contains(date)) {
+                       String timeForDB_=columnNameInTable.substring(11,20)+"-"+columnNameInTable.substring(21);
+                       String timeForDB=timeForDB_.replace("-","_");
+                       String timeForDisplay=timeForDB_.replace("_"," ");
+                       columns.add(new AttendencePerDayModel(timeForDisplay,timeForDB));
+                   }
+               }
+           }
+           cursor.close();
+       }
+       catch (Exception ex){
+
+           Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+
+       }
+        return columns;
+
+    }
+
+
 }
