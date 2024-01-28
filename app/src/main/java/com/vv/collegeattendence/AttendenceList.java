@@ -44,11 +44,12 @@ public class AttendenceList extends AppCompatActivity{
             String semister= TableNameSplit[1].replace("$"," ");
             String section= TableNameSplit[2].replace("$"," ");
             String date = getIntent().getStringExtra("date");
+            String startEndTime=getIntent().getStringExtra("startEndTime");
             subjectNameTV.setText(subject);
             semisterTV.setText(semister);
             sectionTV.setText(section);
             dateTV.setText(date);
-            String finalDate="_"+date;
+            String finalDate="_"+date+startEndTime;
             RecyclerView recyclerView = findViewById(R.id.attendenceRecycle);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             DataBase database = new DataBase(this);

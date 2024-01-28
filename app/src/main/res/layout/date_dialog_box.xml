@@ -42,9 +42,96 @@
 
  </LinearLayout>
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Time  "
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textSize="@dimen/_14sdp"
+            />
+
+        <NumberPicker
+            android:id="@+id/hourPickerStart"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text=" :"
+            android:textSize="@dimen/_30sdp"
+            />
+        <NumberPicker
+            android:id="@+id/minutePickerStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_weight="1"
+            />
+
+        <NumberPicker
+            android:id="@+id/amPmToggleStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_14sdp"
+            />
+
     </LinearLayout>
+    <LinearLayout
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End Time  "
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textSize="@dimen/_14sdp"
+            />
+
+        <NumberPicker
+            android:id="@+id/hourPickerEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text=" :"
+            android:textSize="@dimen/_30sdp"
+            />
+        <NumberPicker
+            android:id="@+id/minutePickerEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_weight="1"
+            />
+
+        <NumberPicker
+            android:id="@+id/amPmToggleEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_14sdp"
+            />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/next"
         android:layout_height="@dimen/_50sdp"

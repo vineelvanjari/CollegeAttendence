@@ -3,8 +3,11 @@ package com.vv.collegeattendence;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.TimePicker;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.cardview.widget.CardView;
 
@@ -23,7 +30,8 @@ import java.util.Date;
 
 public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
     Context context;
-    String TABLE_NAME;
+    String TABLE_NAME,startTime,endTime;
+    private NumberPicker hourPickerStart, minutePickerStart,amPmToggleStart,hourPickerEnd, minutePickerEnd,amPmToggleEnd;
     BottomSheetDialogFrg(Context context,String TABLE_NAME){
         this.context=context;
         this.TABLE_NAME=TABLE_NAME;
@@ -36,11 +44,60 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             Dialog dialog = new Dialog(context,R.style.Dialogbox_border);
             dialog.setContentView(R.layout.date_dialog_box);
             EditText Date1 = dialog.findViewById(R.id.selectDate);
+            {
+                hourPickerStart = dialog.findViewById(R.id.hourPickerStart);
+                minutePickerStart = dialog.findViewById(R.id.minutePickerStart);
+                amPmToggleStart = dialog.findViewById(R.id.amPmToggleStart);
+                hourPickerStart.setMaxValue(0);
+                hourPickerStart.setMaxValue(12);
+                hourPickerStart.setFormatter(new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        return String.format("%02d", value);
+                    }
+                });
+                minutePickerStart.setMaxValue(0);
+                minutePickerStart.setMaxValue(59);
+                minutePickerStart.setFormatter(new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        return String.format("%02d", value);
+                    }
+                });
+                amPmToggleStart.setMinValue(0);
+                amPmToggleStart.setMaxValue(1);
+                String[] ampm = {"AM", "PM"};
+                amPmToggleStart.setDisplayedValues(ampm);
+
+                hourPickerEnd = dialog.findViewById(R.id.hourPickerEnd);
+                minutePickerEnd = dialog.findViewById(R.id.minutePickerEnd);
+                amPmToggleEnd = dialog.findViewById(R.id.amPmToggleEnd);
+                hourPickerEnd.setMaxValue(0);
+                hourPickerEnd.setMaxValue(12);
+                hourPickerEnd.setFormatter(new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        return String.format("%02d",value);
+                    }
+                });
+                minutePickerEnd.setMaxValue(0);
+                minutePickerEnd.setMaxValue(59);
+                minutePickerEnd.setFormatter(new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        return String.format("%02d",value);
+                    }
+                });
+                amPmToggleEnd.setMinValue(0);
+                amPmToggleEnd.setMaxValue(1);
+                amPmToggleEnd.setDisplayedValues(ampm);
+            }
             Date currentDate = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy h:mm:ss a"); // Add "ss" for seconds
             String formattedDateTime = dateFormat.format(currentDate);
             String date1 = formattedDateTime.substring(0, 10);
             Date1.setText(date1);
+
             Date1.setOnClickListener(va ->{
                 final Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
@@ -57,18 +114,35 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
 
                 datePickerDialog.show();
             });
+
             dialog.findViewById(R.id.next).setOnClickListener(a ->{
+                int selectedHour = hourPickerStart.getValue();
+                int selectedMinute = minutePickerStart.getValue();
+                String  amPm;
+                amPm=String.valueOf(amPmToggleStart.getValue()).equals("0")?"AM":"PM";
+                startTime = String.format("%02d_%02d_%s", selectedHour, selectedMinute, amPm);
+                selectedHour = hourPickerEnd.getValue();
+                selectedMinute = minutePickerEnd.getValue();
+
+                amPm=String.valueOf(amPmToggleEnd.getValue()).equals("0")? "AM":"PM";
+                endTime = String.format("%02d_%02d_%s", selectedHour, selectedMinute, amPm);
+
                 DataBase dataBase = new DataBase(context);
-                if(!dataBase.checkColumnName(TABLE_NAME,"_"+Date1.getText().toString()))
+                String startEndTime="_"+startTime+"_"+endTime;
+                String dateColumn="_"+Date1.getText().toString()+startEndTime;
+                if(!dataBase.checkColumnName(TABLE_NAME,dateColumn))
                 {
-                    dataBase.inserDate(TABLE_NAME,"_"+Date1.getText().toString());
+                    dataBase.inserDate(TABLE_NAME,dateColumn);
+                    Intent intent = new Intent(context, AttendenceList.class);
+                    intent.putExtra("date",Date1.getText().toString());
+                    intent.putExtra("startEndTime",startEndTime);
+                    intent.putExtra("tableName",TABLE_NAME);
+                    ((Activity) context).startActivityForResult(intent,1);
+                    dialog.dismiss();
+                    ((Activity) context).finish();
                 }
-                Intent intent = new Intent(context, AttendenceList.class);
-                intent.putExtra("date",Date1.getText().toString());
-                intent.putExtra("tableName",TABLE_NAME);
-                ((Activity) context).startActivityForResult(intent,1);
-                dialog.dismiss();
-                ((Activity) context).finish();
+                else
+                    Toast.makeText(context, "Already class attendnce is present on this date and time", Toast.LENGTH_SHORT).show();
             });
             dialog.show();
         });
