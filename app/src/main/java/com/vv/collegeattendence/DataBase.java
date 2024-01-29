@@ -10,7 +10,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class DataBase extends SQLiteOpenHelper {
     SQLiteDatabase dbw = this.getWritableDatabase();
@@ -117,43 +121,72 @@ public class DataBase extends SQLiteOpenHelper {
     public void deleteTable(String TABLE_NAME){
         dbw.execSQL("drop table "+TABLE_NAME);
     }
-    public ArrayList<StringBuffer> downloadData(String TABLE_NAME){
+    public  ArrayList<StringBuffer> downloadData(String TABLE_NAME , String startDate,String endDate){
         ArrayList<StringBuffer> studentList = new ArrayList<>();
-        Cursor cursorColumn = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
-        cursorColumn.moveToFirst();
-        cursorColumn.moveToNext();
-        StringBuffer columnNames = new StringBuffer();
-        do{
-                Log.d("columnCount",cursorColumn.getString(1)+",");
-                columnNames.append(cursorColumn.getString(1)).append(",");
+        int check=0;
+        try{
+            String columnNamesInDB=SNO+","+STUDENT_NAME+","+PIN_NO;
+            ArrayList<String> dateList = new ArrayList<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy", Locale.getDefault());
+            Date startDateObj,endDateObj;
+            startDateObj= dateFormat.parse(startDate);
+            endDateObj= dateFormat.parse(endDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDateObj);
+            while (!calendar.getTime().after(endDateObj)) {
+                dateList.add(dateFormat.format(calendar.getTime()));
+                Log.d("datesdates", dateFormat.format(calendar.getTime()));
+                calendar.add(Calendar.DATE, 1);
+            }
+            Cursor cursorColumnCheck = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
+            cursorColumnCheck.moveToFirst();
+            if(cursorColumnCheck.getCount()>0){
+                while (cursorColumnCheck.moveToNext()){
+                    Log.d("datesdates",cursorColumnCheck.getString(1));
+                    for (String str : dateList) {
+                        if (cursorColumnCheck.getString(1).contains("_"+str)) {
+                            columnNamesInDB+=","+cursorColumnCheck.getString(1);
+                            check=1;
+                        }
+                    }
+                }
+                Log.d("columnNames12",columnNamesInDB);
+                StringBuffer columnNames = new StringBuffer();
+               columnNames.append(columnNamesInDB);
+                Log.d("columnNames12", String.valueOf(columnNames));
+                studentList.add(columnNames);
+                Cursor cursor = dbw.rawQuery("select "+columnNamesInDB+" from "+TABLE_NAME,null);
+                cursor.moveToFirst();
+                do {
+                    StringBuffer str = new StringBuffer();
+                    for (int i=0;(i<cursor.getColumnCount()-1);i++){
+                        if(i>2){
+                            if(cursor.getString(i).equals("1")){
+                                str.append("present,");
+                            }
+                            else if(cursor.getString(i).equals("0")) {
+                                str.append("absent,");
+                            }
+                            else {
+                                str.append(cursor.getString(i)).append(",");
+                            }
+                        }
+                        else {
+                            str.append(cursor.getString(i)).append(",");
+                        }
+                    }
+                    studentList.add(str);
+                    Log.d("columnCount",str.toString());
+                }while (cursor.moveToNext());
+            }
 
-        }while (cursorColumn.moveToNext());
-        Log.d("columnCount",columnNames.toString());
-        studentList.add(columnNames);
-        Cursor cursor = dbw.rawQuery("select * from "+TABLE_NAME,null);
-        cursor.moveToFirst();
-       do {
-           StringBuffer str = new StringBuffer();
-           for (int i=1;i<cursor.getColumnCount();i++){
-               if(i>3){
-                   if(cursor.getString(i).equals("1")){
-                       str.append("present,");
-                   }
-                   else if(cursor.getString(i).equals("0")) {
-                       str.append("absent,");
-                   }
-                   else {
-                       str.append(cursor.getString(i)).append(",");
-                   }
-               }
-               else {
-                   str.append(cursor.getString(i)).append(",");
-               }
-           }
-           studentList.add(str);
-           Log.d("columnCount",str.toString());
-       }while (cursor.moveToNext());
-     return studentList;
+        }catch (Exception ex){
+
+        }
+        if(check!=0)
+        return studentList;
+        else
+            return  new ArrayList<StringBuffer>();
     }
     public  ArrayList<AttendencePerDayModel> checkColumnList(String TABLE_NAME,String date){
         ArrayList<AttendencePerDayModel> columns= new ArrayList<>();
@@ -179,8 +212,19 @@ public class DataBase extends SQLiteOpenHelper {
 
        }
         return columns;
+    }
+    public void changeTableName(String OLD_TABLE_NAME , String NEW_TABLE_NAME){
+        dbw.execSQL("create table "+NEW_TABLE_NAME+" AS select * from "+OLD_TABLE_NAME);
+        dbw.execSQL("drop table if exists "+OLD_TABLE_NAME);
+    }
+    public boolean checkStudentPinNO(String TABLE_NAME,String pinNO){
+         Cursor cursor= dbw.rawQuery("select * from "+TABLE_NAME+" where "+PIN_NO+" = ?",new String[] {pinNO});
+         if(cursor.getCount()==1)
+             return true;
+         else
+             return false;
+
+
 
     }
-
-
 }

@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             onBackPressed();
         return super.onOptionsItemSelected(item);
     }
-    private static boolean isFirstCharDigit(String input) {
+    public static boolean isFirstCharDigit(String input) {
         // Check if the string is not empty and the first character is a digit
         return !input.isEmpty() && Character.isDigit(input.charAt(0));
     }

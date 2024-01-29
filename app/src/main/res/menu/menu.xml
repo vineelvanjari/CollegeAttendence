@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item
-    android:id="@+id/delete"
-    android:title="Delete" />
+    <item
+        android:id="@+id/delete"
+        android:title="Delete attendence" />
+    <item
+        android:id="@+id/edit"
+        android:title="Edit attendence" />
     <item
         android:id="@+id/checkAll"
-        android:title="check All"
+        android:title="Check All"
         />
     <item
         android:id="@+id/uncheckAll"
-        android:title="uncheck All"
+        android:title="Uncheck All"
         />
     <item
-        android:id="@+id/downloadAttendence"
-        android:title="Download Attendence"
+        android:id="@+id/shareAttendence"
+        android:title="Share Attendence"
         />
 </menu>

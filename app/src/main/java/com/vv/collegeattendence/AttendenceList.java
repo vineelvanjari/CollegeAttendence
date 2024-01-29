@@ -5,6 +5,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,12 +24,14 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class AttendenceList extends AppCompatActivity{
     AttendenceRecycleAdapter adapter;
     ArrayList<AttendenceListModel> arrayList;
-    private final int EXTERNAL_STORAGE_PERMISSION_CODE = 23;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +80,7 @@ public class AttendenceList extends AppCompatActivity{
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
-                        if(id==R.id.delete){
+                       /* if(id==R.id.delete){
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendenceList.this,R.style.Dialogbox_border);
                             builder.setTitle("DO YOU WANT TO DELETE THIS SUBJECT ??");
                             builder.setIcon(R.drawable.delete);
@@ -95,7 +100,8 @@ public class AttendenceList extends AppCompatActivity{
                                 }
                             });
                             builder.show();
-                        } else if (id==R.id.checkAll) {
+                        }*/
+                         if (id==R.id.checkAll) {
                                 adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll");
                             recyclerView.setAdapter(adapter);
 
@@ -105,39 +111,9 @@ public class AttendenceList extends AppCompatActivity{
                             recyclerView.setAdapter(adapter);
 
                         }
-                        else if (id==R.id.downloadAttendence) {
+                        /*else if (id==R.id.downloadAttendence) {
 
-                            if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
-                                    ContextCompat.checkSelfPermission(AttendenceList.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                                    ContextCompat.checkSelfPermission(AttendenceList.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(AttendenceList.this,
-                                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                                        EXTERNAL_STORAGE_PERMISSION_CODE);
-                            }
-
-                            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-                            ArrayList<StringBuffer> str =database.downloadData(TABLE_NAME);
-                            String fileName=subject+"_"+semister+"_"+section+".csv";
-                            File file = new File(folder,fileName);
-                            writeTextData(file, "");
-
-                            if(file.exists()) {
-                                if (str.size() > 0) {
-                                    String data = "";
-                                    for (StringBuffer i:str) {
-                                        data = data + i + "\n";
-                                    }
-
-                                    writeTextData(file, data);
-                                    Toast.makeText(AttendenceList.this, fileName+" Downloaded", Toast.LENGTH_SHORT).show();
-                                }
-                                else
-                                    Toast.makeText(AttendenceList.this, "No data found to upload...", Toast.LENGTH_SHORT).show();
-                            } else
-                                Toast.makeText(AttendenceList.this, "File cannot be created!", Toast.LENGTH_SHORT).show();
-                        }
-
+                        }*/
                         return true;
                     }
                 });
@@ -156,22 +132,5 @@ public class AttendenceList extends AppCompatActivity{
     public void backPress(){
         startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-    private void writeTextData(File file, String data) {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(data.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
