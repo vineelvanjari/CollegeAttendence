@@ -33,15 +33,17 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     String TABLE_NAME;
     boolean flag=false;
     String sno,pin,name;
+    boolean showEdit;
 
 
-    public AttendenceRecycleAdapter(Context context, ArrayList<AttendenceListModel> arrayList,String date,String checked,String TABLE_NAME,String finalDate){
+    public AttendenceRecycleAdapter(Context context, ArrayList<AttendenceListModel> arrayList,String date,String checked,String TABLE_NAME,String finalDate,boolean showEdit){
         this.context=context;
         this.arrayList=arrayList;
         this.date=date;
         this.checked=checked;
         this.TABLE_NAME=TABLE_NAME;
         this.finalDate=finalDate;
+        this.showEdit=showEdit;
     }
     @NonNull
     @Override
@@ -58,6 +60,9 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             pin=arrayList.get(position).pinNo;
             holder.pinNO.setText(pin);
             holder.sno.setText(sno);
+            if(showEdit){
+                holder.checkBox.setEnabled(false);
+            }
             int id=arrayList.get(position).id;
             name= arrayList.get(position).name;
             if (name.length() < 15) {

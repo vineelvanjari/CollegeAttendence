@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,7 +33,7 @@ import java.util.Date;
 public class AttendenceList extends AppCompatActivity{
     AttendenceRecycleAdapter adapter;
     ArrayList<AttendenceListModel> arrayList;
-
+    int edit1=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,7 @@ public class AttendenceList extends AppCompatActivity{
             String subject= TableNameSplit[0].replace("$"," ");
             String semister= TableNameSplit[1].replace("$"," ");
             String section= TableNameSplit[2].replace("$"," ");
+            boolean flag=getIntent().getBooleanExtra("flag",false);
             String date = getIntent().getStringExtra("date");
             String startEndTime=getIntent().getStringExtra("startEndTime");
             subjectNameTV.setText(subject);
@@ -60,7 +62,7 @@ public class AttendenceList extends AppCompatActivity{
             DataBase database = new DataBase(this);
             arrayList= database.getAttendenceList(TABLE_NAME,finalDate);
             if(arrayList.size()>0){
-                adapter  = new AttendenceRecycleAdapter(this,arrayList,date,"default",TABLE_NAME,finalDate);
+                adapter  = new AttendenceRecycleAdapter(this,arrayList,date,"default",TABLE_NAME,finalDate,flag);
                 recyclerView.setAdapter(adapter);
             }
             findViewById(R.id.exitbutton).setOnClickListener( v-> {
@@ -73,9 +75,22 @@ public class AttendenceList extends AppCompatActivity{
                 }
                 backPress();
             });
+
             findViewById(R.id.dots).setOnClickListener(v ->{
                 PopupMenu popupMenu = new PopupMenu(this,v);
                 popupMenu.getMenuInflater().inflate(R.menu.menu,popupMenu.getMenu());
+                if((!flag) || (edit1==1)){
+                    MenuItem itemToRemove = popupMenu.getMenu().findItem(R.id.edit);
+                    popupMenu.getMenu().removeItem(itemToRemove.getItemId());
+                    MenuItem itemToRemove1 = popupMenu.getMenu().findItem(R.id.shareAttendence);
+                    popupMenu.getMenu().removeItem(itemToRemove1.getItemId());
+                }
+                else {
+                    MenuItem itemToRemove = popupMenu.getMenu().findItem(R.id.checkAll);
+                    popupMenu.getMenu().removeItem(itemToRemove.getItemId());
+                    MenuItem itemToRemove1 = popupMenu.getMenu().findItem(R.id.uncheckAll);
+                    popupMenu.getMenu().removeItem(itemToRemove1.getItemId());
+                }
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -90,7 +105,6 @@ public class AttendenceList extends AppCompatActivity{
                                    startActivity(new Intent(AttendenceList.this, MainActivity.class));
                                     finish();
                                     database.deleteColumn(TABLE_NAME,finalDate);
-
                                 }
                             });
                             builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -102,15 +116,42 @@ public class AttendenceList extends AppCompatActivity{
                             builder.show();
                        }
                          if (id==R.id.checkAll) {
-                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll",TABLE_NAME,finalDate);
+                             boolean flagCH=flag;
+                             if(edit1==1)
+                                 flagCH=!flag;
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll",TABLE_NAME,finalDate,flagCH);
                             recyclerView.setAdapter(adapter);
 
                         }
                         else if (id==R.id.uncheckAll) {
-                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll",TABLE_NAME,finalDate);
+                             boolean flagCH=flag;
+                             if(edit1==1)
+                                 flagCH=!flag;
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll",TABLE_NAME,finalDate,flagCH);
                             recyclerView.setAdapter(adapter);
 
-                        }
+                        } else if (id==R.id.edit) {
+                             adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"default",TABLE_NAME,finalDate,!flag);
+                             recyclerView.setAdapter(adapter);
+                             MenuItem itemToRemove = popupMenu.getMenu().findItem(R.id.edit);
+                             popupMenu.getMenu().removeItem(itemToRemove.getItemId());
+                             MenuItem itemToRemove1 = popupMenu.getMenu().findItem(R.id.shareAttendence);
+                             popupMenu.getMenu().removeItem(itemToRemove1.getItemId());
+                             edit1=1;
+                         } else if (id==R.id.shareAttendence) {
+                             String textToShare = subject+"\n"+startEndTime.replace("_"," ");
+                             for(int i=0;i<arrayList.size();i++){
+                                 AttendenceListModel attendenceListModel = arrayList.get(i);
+                                 String presentAbsent="absent";
+                                 if(attendenceListModel.attendence==1)
+                                     presentAbsent="present";
+                                 textToShare+="\n"+attendenceListModel.pinNo+"\t"+presentAbsent;
+                             }
+                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                             shareIntent.setType("text/plain");
+                             shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+                             startActivity(Intent.createChooser(shareIntent, "Share via"));
+                         }
                         return true;
                     }
                 });

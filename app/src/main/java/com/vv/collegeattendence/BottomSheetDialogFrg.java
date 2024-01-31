@@ -161,6 +161,7 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                     intent.putExtra("date",Date1.getText().toString());
                     intent.putExtra("startEndTime",startEndTime);
                     intent.putExtra("tableName",TABLE_NAME);
+                    intent.putExtra("flag",false);
                     ((Activity) context).startActivityForResult(intent,1);
                     dialog.dismiss();
                     ((Activity) context).finish();
@@ -170,7 +171,6 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             });
         }
         else {
-
             LinearLayout startTimeLL,endTimeLL;
             startTimeLL=dialog.findViewById(R.id.start_time_linear_layout);
             endTimeLL=dialog.findViewById(R.id.end_time_linear_layout);
@@ -199,6 +199,7 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                             intent.putExtra("date",Date1.getText().toString());
                             intent.putExtra("startEndTime",time);
                             intent.putExtra("tableName",TABLE_NAME);
+                            intent.putExtra("flag",true);
                             ((Activity) context).startActivity(intent);
                             dialog.dismiss();
                             ((Activity) context).finish();
