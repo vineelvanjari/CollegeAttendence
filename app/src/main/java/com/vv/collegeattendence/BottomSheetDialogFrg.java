@@ -13,10 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -57,9 +59,16 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
         return viewRef;
     }
     public void Dialog(View viewRef,boolean flag){
+    try{
         DataBase dataBase = new DataBase(context);
         Dialog dialog = new Dialog(context,R.style.Dialogbox_border);
         dialog.setContentView(R.layout.date_dialog_box);
+        ImageView delete;
+        delete=dialog.findViewById(R.id.delete);
+        dialog.findViewById(R.id.cancel).setOnClickListener(v ->{
+            dialog.dismiss();
+        });
+        delete.setVisibility(View.GONE);
         EditText Date1 = dialog.findViewById(R.id.selectDate);
         Button next=dialog.findViewById(R.id.next);
         Date currentDate = new Date();
@@ -172,6 +181,7 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                 Dialog dialog1 = new Dialog(context,R.style.Dialogbox_border);
                 dialog1.setContentView(R.layout.attendence_per_day);
                 ListView listView = dialog1.findViewById(R.id.attendence_per_day);
+
                 if(columnData.size()>0){
                     ArrayList<String> columnNamesAL = new ArrayList<>();
                     for(int i=0;i<columnData.size();i++){
@@ -184,12 +194,12 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String time=columnData.get(position).timeForDB;
+                            String time=columnData.get(position).timeForDB;
                             Intent intent = new Intent(context, AttendenceList.class);
                             intent.putExtra("date",Date1.getText().toString());
                             intent.putExtra("startEndTime",time);
                             intent.putExtra("tableName",TABLE_NAME);
-                            ((Activity) context).startActivityForResult(intent,1);
+                            ((Activity) context).startActivity(intent);
                             dialog.dismiss();
                             ((Activity) context).finish();
 
@@ -202,13 +212,11 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             });
         }
         dialog.show();
+
+    }
+    catch (Exception ex){
+        Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show();
+    }
+
     }
 }
-/*if (columnNameInTable.contains(date)) {
-                String columnNameWithSpaces=columnNameInTable.replace("_"," ");
-                String statingTime=columnNameWithSpaces.substring(12,20);
-                String     endTime=columnNameWithSpaces.substring(21);
-                String arrayListString=statingTime+" - "+endTime;
-                columns.add(arrayListString);
-                Log.d("columnList",arrayListString);
-            }*/

@@ -60,7 +60,7 @@ public class AttendenceList extends AppCompatActivity{
             DataBase database = new DataBase(this);
             arrayList= database.getAttendenceList(TABLE_NAME,finalDate);
             if(arrayList.size()>0){
-                adapter  = new AttendenceRecycleAdapter(this,arrayList,date,"default");
+                adapter  = new AttendenceRecycleAdapter(this,arrayList,date,"default",TABLE_NAME,finalDate);
                 recyclerView.setAdapter(adapter);
             }
             findViewById(R.id.exitbutton).setOnClickListener( v-> {
@@ -80,17 +80,17 @@ public class AttendenceList extends AppCompatActivity{
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
-                       /* if(id==R.id.delete){
+                       if(id==R.id.deleteAttendence){
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendenceList.this,R.style.Dialogbox_border);
-                            builder.setTitle("DO YOU WANT TO DELETE THIS SUBJECT ??");
+                            builder.setTitle("DO YOU WANT TO DELETE THIS ATTENDANCE ??");
                             builder.setIcon(R.drawable.delete);
                             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    database.deleteTable(TABLE_NAME);
-                                    setResult(1);
-                                    dialogInterface.dismiss();
-                                    backPress();
+                                   startActivity(new Intent(AttendenceList.this, MainActivity.class));
+                                    finish();
+                                    database.deleteColumn(TABLE_NAME,finalDate);
+
                                 }
                             });
                             builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -100,20 +100,17 @@ public class AttendenceList extends AppCompatActivity{
                                 }
                             });
                             builder.show();
-                        }*/
+                       }
                          if (id==R.id.checkAll) {
-                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll");
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll",TABLE_NAME,finalDate);
                             recyclerView.setAdapter(adapter);
 
                         }
                         else if (id==R.id.uncheckAll) {
-                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll");
+                                adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll",TABLE_NAME,finalDate);
                             recyclerView.setAdapter(adapter);
 
                         }
-                        /*else if (id==R.id.downloadAttendence) {
-
-                        }*/
                         return true;
                     }
                 });

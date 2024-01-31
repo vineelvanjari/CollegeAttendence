@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:layout_height="match_parent">
+    <include layout="@layout/delete_cancel"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/_20sdp"
         android:textAlignment="center"
         android:textSize="@dimen/_20sdp"
         />

@@ -42,6 +42,14 @@ public class DataBase extends SQLiteOpenHelper {
         else
             return false;
     }
+    public void changeTableName(String OLD_TABLE_NAME , String NEW_TABLE_NAME){
+        dbw.execSQL("create table "+NEW_TABLE_NAME+" AS select * from "+OLD_TABLE_NAME);
+        dbw.execSQL("drop table if exists "+OLD_TABLE_NAME);
+    }
+    public void deleteTable(String TABLE_NAME){
+        dbw.execSQL("drop table "+TABLE_NAME);
+    }
+
     public boolean insertSubject (String TABLE_NAME,String sNo,String studentName,String pinNo){
         ContentValues cv = new ContentValues();
         cv.put(SNO,sNo);
@@ -53,7 +61,18 @@ public class DataBase extends SQLiteOpenHelper {
         else
             return false;
     }
-   public ArrayList<SubjectModel> getSubjects(){
+    public boolean updateStudent (String TABLE_NAME,String sNo,String studentName,String pinNo,int id){
+        ContentValues cv = new ContentValues();
+        cv.put(SNO,sNo);
+        cv.put(STUDENT_NAME,studentName);
+        cv.put(PIN_NO,pinNo);
+        long flag= dbw.update(TABLE_NAME,cv,ID+"="+id,null);
+        if(flag!=-1)
+            return true;
+        else
+            return false;
+    }
+    public ArrayList<SubjectModel> getSubjects(){
         ArrayList<SubjectModel> arrayList = new ArrayList<>();
        Cursor cursor = dbw.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         cursor.moveToFirst();
@@ -72,7 +91,7 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return  arrayList;
     }
-   public ArrayList<AttendenceListModel> getAttendenceList(String TABLE_NAME,String date){
+    public ArrayList<AttendenceListModel> getAttendenceList(String TABLE_NAME,String date){
         Cursor cursor= dbr.rawQuery("select pinNo,sNo,id,"+date+" ,"+STUDENT_NAME+" from "+TABLE_NAME,null);
         ArrayList<AttendenceListModel> arrayList = new ArrayList<>();
         cursor.moveToFirst();
@@ -89,7 +108,7 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return  arrayList;
     }
-  public void inserDate(String TABLE_NAME,String validColumnName) {
+    public void inserDate(String TABLE_NAME,String validColumnName) {
         dbw.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + validColumnName + " BOOLEAN default 0 ");
     }
     public void inserDateValue(String TABLE_NAME,String validColumnName,int id,Boolean value) {
@@ -117,9 +136,6 @@ public class DataBase extends SQLiteOpenHelper {
             // Column not found
         }
 
-    }
-    public void deleteTable(String TABLE_NAME){
-        dbw.execSQL("drop table "+TABLE_NAME);
     }
     public  ArrayList<StringBuffer> downloadData(String TABLE_NAME , String startDate,String endDate){
         ArrayList<StringBuffer> studentList = new ArrayList<>();
@@ -213,18 +229,33 @@ public class DataBase extends SQLiteOpenHelper {
        }
         return columns;
     }
-    public void changeTableName(String OLD_TABLE_NAME , String NEW_TABLE_NAME){
-        dbw.execSQL("create table "+NEW_TABLE_NAME+" AS select * from "+OLD_TABLE_NAME);
-        dbw.execSQL("drop table if exists "+OLD_TABLE_NAME);
-    }
     public boolean checkStudentPinNO(String TABLE_NAME,String pinNO){
          Cursor cursor= dbw.rawQuery("select * from "+TABLE_NAME+" where "+PIN_NO+" = ?",new String[] {pinNO});
          if(cursor.getCount()==1)
              return true;
          else
              return false;
-
-
-
     }
+    public  void deleteColumn(String TABLE_NAME,String columnName){
+       try {
+           dbw.execSQL("ALTER TABLE "+TABLE_NAME+" DROP COLUMN "+columnName);
+       }
+       catch (Exception ex){
+           Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+       }
+    }
+    public  boolean deleteStudent(String TABLE_NAME,int id){
+        long flag = 0;
+        try {
+            flag= dbw.delete(TABLE_NAME,"id="+id,null);
+        }
+        catch (Exception ex){
+            Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+        }
+        if(flag!=-1)
+            return true;
+        else
+            return false;
+    }
+
 }
