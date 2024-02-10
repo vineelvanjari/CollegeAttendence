@@ -58,9 +58,6 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
     String TABLE_NAME;
     String subjectName,semister,section;
     DataBase database;
-
-
-
     public SubjectRecycleAdapter(Context context, ArrayList<SubjectModel> arrayList){
         this.context=context;
         this.arrayList=arrayList;
@@ -76,6 +73,7 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder,int position) {
         try{
+
             subjectName=arrayList.get(position).subjectName;
             semister=arrayList.get(position).semister;
             section=arrayList.get(position).section;
@@ -92,14 +90,21 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
             holder.subjectCatdView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    subjectName=arrayList.get(position).subjectName;
+                    semister=arrayList.get(position).semister;
+                    section=arrayList.get(position).section;
+                    TABLE_NAME=subjectName+"_"+semister+"_"+section;
                     BottomSheetDialogFrg bottomSheetDialogFrg = new  BottomSheetDialogFrg(context,TABLE_NAME);
                     FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
                     bottomSheetDialogFrg.show(fragmentManager, bottomSheetDialogFrg.getTag());
-
                 }
 
             });
             holder.dots.setOnClickListener(v ->{
+                subjectName=arrayList.get(position).subjectName;
+                semister=arrayList.get(position).semister;
+                section=arrayList.get(position).section;
+                TABLE_NAME=subjectName+"_"+semister+"_"+section;
                 database = new DataBase(context);
                 PopupMenu popupMenu = new PopupMenu(context,v);
                 popupMenu.getMenuInflater().inflate(R.menu.subject_menu,popupMenu.getMenu());

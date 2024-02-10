@@ -14,4 +14,7 @@ public class AttendenceListModel {
         this.id=id;
         this.attendence=attendence;
     }
+    public void setValueToChange(int valueToChange) {
+        this.attendence = valueToChange;
+    }
 }

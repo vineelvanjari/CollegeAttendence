@@ -43,8 +43,30 @@ public class DataBase extends SQLiteOpenHelper {
             return false;
     }
     public void changeTableName(String OLD_TABLE_NAME , String NEW_TABLE_NAME){
-        dbw.execSQL("create table "+NEW_TABLE_NAME+" AS select * from "+OLD_TABLE_NAME);
-        dbw.execSQL("drop table if exists "+OLD_TABLE_NAME);
+        try {
+            String columnNamesStart = SNO + "," + STUDENT_NAME + "," + PIN_NO;
+            String columnNames = SNO + " text ," + STUDENT_NAME + " text ," + PIN_NO + " text ";
+            Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + OLD_TABLE_NAME + ")", null);
+            cursor.moveToFirst();
+            cursor.moveToNext();
+            cursor.moveToNext();
+            cursor.moveToNext();
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    String columnNameInTable = cursor.getString(1); // Index 1: column name
+                    columnNames += " ," + columnNameInTable + " BOOLEAN default 0 ";
+                    columnNamesStart += " ," + columnNameInTable;
+                }
+                String createTableNew = "create table " + NEW_TABLE_NAME + " ( " + ID + " integer primary key autoincrement ," + columnNames + ")";
+                dbw.execSQL(createTableNew);
+                dbw.execSQL("insert into " + NEW_TABLE_NAME + " (" + columnNamesStart + ") select " + columnNamesStart + " from " + OLD_TABLE_NAME);
+                dbw.execSQL("drop table " + OLD_TABLE_NAME);
+
+            }
+        }
+        catch (Exception ex){
+            Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
     public void deleteTable(String TABLE_NAME){
         dbw.execSQL("drop table "+TABLE_NAME);
@@ -74,16 +96,16 @@ public class DataBase extends SQLiteOpenHelper {
     }
     public ArrayList<SubjectModel> getSubjects(){
         ArrayList<SubjectModel> arrayList = new ArrayList<>();
-       Cursor cursor = dbw.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        Cursor cursor = dbw.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         cursor.moveToFirst();
         if(cursor.getCount()>1){
             do{
                 String TABLE_NAME=cursor.getString(0);
                 if (!(TABLE_NAME.equals("sqlite_sequence") || TABLE_NAME.equals("android_metadata"))){
-                        String[] TableNameSplit = TABLE_NAME.split("_");
-                        String subject= TableNameSplit[0];
-                        String semister= TableNameSplit[1];
-                        String section= TableNameSplit[2];
+                    String[] TableNameSplit = TABLE_NAME.split("_");
+                    String subject= TableNameSplit[0];
+                    String semister= TableNameSplit[1];
+                    String section= TableNameSplit[2];
                     SubjectModel subjectModel = new SubjectModel(subject,semister,section);
                     arrayList.add(subjectModel);
                 }
@@ -168,7 +190,7 @@ public class DataBase extends SQLiteOpenHelper {
                 }
                 Log.d("columnNames12",columnNamesInDB);
                 StringBuffer columnNames = new StringBuffer();
-               columnNames.append(columnNamesInDB);
+                columnNames.append(columnNamesInDB);
                 Log.d("columnNames12", String.valueOf(columnNames));
                 studentList.add(columnNames);
                 Cursor cursor = dbw.rawQuery("select "+columnNamesInDB+" from "+TABLE_NAME,null);
@@ -200,49 +222,73 @@ public class DataBase extends SQLiteOpenHelper {
 
         }
         if(check!=0)
-        return studentList;
+            return studentList;
         else
             return  new ArrayList<StringBuffer>();
     }
     public  ArrayList<AttendencePerDayModel> checkColumnList(String TABLE_NAME,String date){
         ArrayList<AttendencePerDayModel> columns= new ArrayList<>();
         try{
-           Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
-           cursor.moveToFirst();
-           if(cursor.getCount()>0){
-               while (cursor.moveToNext()) {
-                   String columnNameInTable = cursor.getString(1); // Index 1: column name
-                   if (columnNameInTable.contains(date)) {
-                       String timeForDB_=columnNameInTable.substring(11,20)+"-"+columnNameInTable.substring(21);
-                       String timeForDB=timeForDB_.replace("-","_");
-                       String timeForDisplay=timeForDB_.replace("_"," ");
-                       columns.add(new AttendencePerDayModel(timeForDisplay,timeForDB));
-                   }
-               }
-           }
-           cursor.close();
-       }
-       catch (Exception ex){
+            Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
+            cursor.moveToFirst();
+            if(cursor.getCount()>0){
+                while (cursor.moveToNext()) {
+                    String columnNameInTable = cursor.getString(1); // Index 1: column name
+                    if (columnNameInTable.contains(date)) {
+                        String timeForDB_=columnNameInTable.substring(11,20)+"-"+columnNameInTable.substring(21);
+                        String timeForDB=timeForDB_.replace("-","_");
+                        String timeForDisplay=timeForDB_.replace("_"," ");
+                        columns.add(new AttendencePerDayModel(timeForDisplay,timeForDB));
+                    }
+                }
+            }
+            cursor.close();
+        }
+        catch (Exception ex){
 
-           Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
 
-       }
+        }
         return columns;
     }
     public boolean checkStudentPinNO(String TABLE_NAME,String pinNO){
-         Cursor cursor= dbw.rawQuery("select * from "+TABLE_NAME+" where "+PIN_NO+" = ?",new String[] {pinNO});
-         if(cursor.getCount()==1)
-             return true;
-         else
-             return false;
+        Cursor cursor= dbw.rawQuery("select * from "+TABLE_NAME+" where "+PIN_NO+" = ?",new String[] {pinNO});
+        if(cursor.getCount()==1)
+            return true;
+        else
+            return false;
     }
     public  void deleteColumn(String TABLE_NAME,String columnName){
-       try {
-           dbw.execSQL("ALTER TABLE "+TABLE_NAME+" DROP COLUMN "+columnName);
-       }
-       catch (Exception ex){
-           Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
-       }
+        try {
+                String columnNamesStart=SNO+","+STUDENT_NAME+","+PIN_NO;
+                String columnNames=SNO+" text ,"+STUDENT_NAME+" text ,"+PIN_NO+" text ";
+                Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
+                cursor.moveToFirst();
+                cursor.moveToNext();
+                cursor.moveToNext();
+                cursor.moveToNext();
+                if(cursor.getCount()>0) {
+                    while (cursor.moveToNext()) {
+                        String columnNameInTable = cursor.getString(1); // Index 1: column name
+                        if (! columnNameInTable.equals(columnName)) {
+                            columnNames += " ," + columnNameInTable + " BOOLEAN default 0 ";
+                            columnNamesStart += " ," + columnNameInTable;
+                        }
+                    }
+                    String createTableNew="create table " + TABLE_NAME + "1 ( " + ID + " integer primary key autoincrement ," + columnNames + ")";
+                    dbw.execSQL(createTableNew);
+                    dbw.execSQL("insert into " + TABLE_NAME + "1 (" + columnNamesStart + ") select " + columnNamesStart + " from " + TABLE_NAME);
+                    dbw.execSQL("drop table " + TABLE_NAME);
+                     createTableNew="create table " + TABLE_NAME + " ( " + ID + " integer primary key autoincrement ," + columnNames + ")";
+                    dbw.execSQL(createTableNew);
+                    dbw.execSQL("insert into " + TABLE_NAME + " (" + columnNamesStart + ") select " + columnNamesStart + " from " + TABLE_NAME+"1");
+                    dbw.execSQL("drop table " + TABLE_NAME+"1");
+                }
+        }
+        catch (Exception ex){
+            Toast.makeText(context1, ex.toString(), Toast.LENGTH_SHORT).show();
+            Log.d("columnName","Exception "+ex.toString());
+        }
     }
     public  boolean deleteStudent(String TABLE_NAME,int id){
         long flag = 0;

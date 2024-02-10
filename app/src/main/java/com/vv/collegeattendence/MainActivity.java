@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -48,11 +49,6 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
             setSupportActionBar(toolbar);
-
-            if(getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }
-
             recyclerView=findViewById(R.id.subjectsRecycle);
             dataBase=new DataBase(this);
             arrayList=dataBase.getSubjects();
@@ -69,12 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 Spinner semisterSpinner = dialog.findViewById(R.id.semister);
                 Spinner section = dialog.findViewById(R.id.section);
                 ArrayList<String> semisterAL = new ArrayList<>();
-                semisterAL.add("1st semister");
-                semisterAL.add("2nd semister");
-                semisterAL.add("3rd semister");
-                semisterAL.add("4th semister");
-                semisterAL.add("5th semister");
-                semisterAL.add("6th semister");
+                semisterAL.add("1st semester");
+                semisterAL.add("2nd semester");
+                semisterAL.add("3rd semester");
+                semisterAL.add("4th semester");
+                semisterAL.add("5th semester");
+                semisterAL.add("6th semester");
                 ArrayAdapter<String> semisterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, semisterAL);
                 semisterSpinner.setAdapter(semisterAdapter);
                 ArrayList<String> sectionAL = new ArrayList<>();
@@ -190,13 +186,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
-            onBackPressed();
+        if(item.getItemId() == R.id.settings)
+        {
+            startActivity(new Intent(this, settings.class));
+        }
         return super.onOptionsItemSelected(item);
     }
     public static boolean isFirstCharDigit(String input) {
         // Check if the string is not empty and the first character is a digit
         return !input.isEmpty() && Character.isDigit(input.charAt(0));
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.setting, menu);
+        return true;
     }
 
 }

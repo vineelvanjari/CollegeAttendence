@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".settings">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"
+            android:padding="@dimen/_10sdp"
+            android:text="Set share attendence "
+            android:textSize="@dimen/_14sdp"
+            android:thumbTint="@color/white"
+            android:track="@drawable/curve"
+            android:trackTint="#00FF00"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <Switch
+            android:id="@+id/present"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"
+            android:padding="@dimen/_10sdp"
+            android:text="share present student "
+            android:textSize="@dimen/_14sdp"
+            android:thumbTint="@color/white"
+            android:track="@drawable/curve"
+            android:trackTint="#00FF00"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <Switch
+        android:id="@+id/absent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_line"
+        android:padding="@dimen/_10sdp"
+        android:text="share absent student "
+        android:textSize="@dimen/_14sdp"
+        android:thumbTint="@color/white"
+        android:track="@drawable/curve"
+        android:trackTint="#00FF00"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <Switch
+            android:id="@+id/endTimeSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"
+            android:padding="@dimen/_10sdp"
+            android:text="auto End Time "
+            android:textSize="@dimen/_14sdp"
+            android:thumbTint="@color/white"
+            android:track="@drawable/curve"
+            android:trackTint="#00FF00"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <LinearLayout
+            android:id="@+id/end_time_linear_layout"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            android:gravity="center"
+            android:background="@drawable/border_line"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Each Period Time"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:textSize="@dimen/_14sdp"
+                />
+
+            <NumberPicker
+                android:id="@+id/hourPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text=" :"
+                android:textSize="@dimen/_30sdp"
+                />
+            <NumberPicker
+                android:id="@+id/minutePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+<!--    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintVertical_bias="0.99"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold"
+                android:text="from " />
+
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:src="@drawable/vineellogo" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Developer EmailID :- vineelvanjari24@gmail.com"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            />
+    </LinearLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

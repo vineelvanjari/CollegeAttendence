@@ -28,8 +28,7 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     String date;
     public ArrayList<CheckBoxModel> CheckBoxArrayList = new ArrayList<>();
     public String checked,finalDate;
-    boolean loopOnceTrue=true;
-    boolean loopOnceFalse=true;
+
     String TABLE_NAME;
     boolean flag=false;
     String sno,pin,name;
@@ -44,6 +43,10 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
         this.TABLE_NAME=TABLE_NAME;
         this.finalDate=finalDate;
         this.showEdit=showEdit;
+        for(int i=0;i<arrayList.size();i++){
+            CheckBoxModel checkBoxModel  = new CheckBoxModel(arrayList.get(i).id, arrayList.get(i).attendence == 1);
+            CheckBoxArrayList.add(checkBoxModel);
+        }
     }
     @NonNull
     @Override
@@ -53,13 +56,13 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int  position) {
         try {
             DataBase database = new DataBase(context);
             sno=arrayList.get(position).sno;
             pin=arrayList.get(position).pinNo;
             holder.pinNO.setText(pin);
-            holder.sno.setText(sno);
+            holder.sno.setText(sno+") ");
             if(showEdit){
                 holder.checkBox.setEnabled(false);
             }
@@ -68,54 +71,52 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             if (name.length() < 15) {
                 // Calculate the number of spaces needed
                 int spacesToAdd = 15 - name.length();
-
                 // Add spaces to the string
                 for (int i = 0; i < spacesToAdd; i++) {
                     name += " ";
                 }
                 holder.studentName.setText(name);
             } else {
-                StringBuilder stringBuilder = new StringBuilder(name);
-                stringBuilder.insert(15,"\n");
-                holder.studentName.setText(stringBuilder.toString());
-            }
-            if(checked.equals("checkAll")){
-                holder.checkBox.setChecked(true);
-                if(loopOnceTrue){
-                    for(int i=0;i<=arrayList.size();i++){
-                        CheckBoxModel checkBoxModel = new CheckBoxModel(i,true);
-                        CheckBoxArrayList.add(checkBoxModel);
+                String[] nameList=name.split(" ");
+                StringBuilder firstLine  = new StringBuilder();
+                StringBuilder nextLine  = new StringBuilder();
+                String displayName="";
+                for (String word : nameList) {
+                    if (firstLine.length() + word.length() + 1 <= 15) {
+                        firstLine.append(word).append(" ");
+                    } else {
+                        nextLine.append(word).append(" ");
                     }
-                    loopOnceTrue=false;
+                }
+                while (firstLine.length()<=15) {
+                    firstLine.append(" ");
                 }
 
+                displayName=firstLine+"\n"+nextLine;
+                holder.studentName.setText(displayName);
             }
-            else if (checked.equals("unCheckAll")) {
+            if((arrayList.get(position).attendence)==1){
+                holder.checkBox.setChecked(true);
+                flag=true;
+            }
+            else {
                 holder.checkBox.setChecked(false);
-                if(loopOnceFalse){
-                    for (int i = 0; i <= arrayList.size(); i++) {
-                        CheckBoxModel checkBoxModel = new CheckBoxModel(i, false);
-                        CheckBoxArrayList.add(checkBoxModel);
-                    }
-                    loopOnceFalse=false;
-                }
-            } else if (checked.equals("default")) {
-                if((arrayList.get(position).attendence)==1){
-                    holder.checkBox.setChecked(true);
-                    flag=true;
-                }
-                else {
-                    holder.checkBox.setChecked(false);
-                    flag=false;
-                }
+                flag=false;
             }
             holder.checkBox.setOnClickListener(v ->{
-
                 if(holder.checkBox.isChecked()){
                     flag=true;
+                    CheckBoxModel checkBoxModel = new CheckBoxModel(arrayList.get(position).id,true);
+                    CheckBoxArrayList.set(position,checkBoxModel);
+                    AttendenceListModel attendenceListModel =  arrayList.get(position);
+                    attendenceListModel.setValueToChange(1);
                 }
-                CheckBoxModel checkBoxModel = new CheckBoxModel(arrayList.get(position).id,flag);
-                CheckBoxArrayList.add(checkBoxModel);
+                else{
+                    CheckBoxModel checkBoxModel = new CheckBoxModel(arrayList.get(position).id,false);
+                    CheckBoxArrayList.set(position,checkBoxModel);
+                    AttendenceListModel attendenceListModel =  arrayList.get(position);
+                    attendenceListModel.setValueToChange(0);
+                }
             });
 
             holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {

@@ -29,14 +29,15 @@
             android:text="1234567890124"
             android:maxEms="15"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
+            android:textStyle="bold"
             android:fontFamily="monospace"
             android:textSize="@dimen/_14sdp"
             />
         <TextView
             android:id="@+id/pinNo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="wrap_content"
             android:text="21001-cs-024"
             android:layout_weight="1"
             android:gravity="right"

@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,11 +35,13 @@ public class AttendenceList extends AppCompatActivity{
     AttendenceRecycleAdapter adapter;
     ArrayList<AttendenceListModel> arrayList;
     int edit1=0;
+    SharedPreferences shareAttendance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_list);
         try {
+            shareAttendance = getSharedPreferences("shareAttendance",MODE_PRIVATE);
             TextView subjectNameTV,semisterTV,sectionTV,dateTV;
             semisterTV=findViewById(R.id.year);
             subjectNameTV=findViewById(R.id.subjectNameRecycle);
@@ -73,7 +76,20 @@ public class AttendenceList extends AppCompatActivity{
                 for(int i=0;i<checkBoxArrayList.size();i++){
                     database.inserDateValue(TABLE_NAME,finalDate,checkBoxArrayList.get(i).id,checkBoxArrayList.get(i).presentAbsent);
                 }
-                backPress();
+                if(!flag){
+                    if(shareAttendance.getBoolean("shareAtt",true)){
+                        arrayList=database.getAttendenceList(TABLE_NAME,finalDate);
+                        backPress();
+                        shareAttendenc(subject,startEndTime);
+                    }
+                    else {
+                        backPress();
+                    }
+                }
+                else
+                    backPress();
+
+
             });
 
             findViewById(R.id.dots).setOnClickListener(v ->{
@@ -116,6 +132,10 @@ public class AttendenceList extends AppCompatActivity{
                             builder.show();
                        }
                          if (id==R.id.checkAll) {
+                             for (AttendenceListModel model : arrayList) {
+                                 model.setValueToChange(1);
+
+                             }
                              boolean flagCH=flag;
                              if(edit1==1)
                                  flagCH=!flag;
@@ -124,8 +144,11 @@ public class AttendenceList extends AppCompatActivity{
 
                         }
                         else if (id==R.id.uncheckAll) {
+                             for (AttendenceListModel model : arrayList) {
+                                 model.setValueToChange(0);
+                             }
                              boolean flagCH=flag;
-                             if(edit1==1)
+                             if(edit1 ==1)
                                  flagCH=!flag;
                                 adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"unCheckAll",TABLE_NAME,finalDate,flagCH);
                             recyclerView.setAdapter(adapter);
@@ -139,18 +162,7 @@ public class AttendenceList extends AppCompatActivity{
                              popupMenu.getMenu().removeItem(itemToRemove1.getItemId());
                              edit1=1;
                          } else if (id==R.id.shareAttendence) {
-                             String textToShare = subject+"\n"+startEndTime.replace("_"," ");
-                             for(int i=0;i<arrayList.size();i++){
-                                 AttendenceListModel attendenceListModel = arrayList.get(i);
-                                 String presentAbsent="absent";
-                                 if(attendenceListModel.attendence==1)
-                                     presentAbsent="present";
-                                 textToShare+="\n"+attendenceListModel.pinNo+"\t"+presentAbsent;
-                             }
-                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                             shareIntent.setType("text/plain");
-                             shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
-                             startActivity(Intent.createChooser(shareIntent, "Share via"));
+                           shareAttendenc(subject,startEndTime);
                          }
                         return true;
                     }
@@ -170,5 +182,43 @@ public class AttendenceList extends AppCompatActivity{
     public void backPress(){
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+    public void shareAttendenc(String subject,String startEndTime){
+        String textToShare = subject+"\n"+startEndTime.replace("_"," ");
+        if(!shareAttendance.getBoolean("present",true)  && !shareAttendance.getBoolean("absent",true)){
+            Toast.makeText(this, "enable 'share student present' or \n 'share student absent'  in setting", Toast.LENGTH_LONG).show();
+        }
+        else {
+            if(shareAttendance.getBoolean("present",true)){
+                boolean once=true;
+                for(int i=0;i<arrayList.size();i++){
+                    AttendenceListModel attendenceListModel = arrayList.get(i);
+                    if(attendenceListModel.attendence==1){
+                        if(once){
+                            textToShare+="\n present List";
+                            once=false;
+                        }
+                        textToShare+="\n"+attendenceListModel.pinNo;
+                    }
+                }
+            }
+            if(shareAttendance.getBoolean("absent",true)){
+                boolean once=true;
+                for(int i=0;i<arrayList.size();i++){
+                    AttendenceListModel attendenceListModel = arrayList.get(i);
+                    if(attendenceListModel.attendence==0){
+                        if(once){
+                            textToShare+="\n absent List";
+                            once=false;
+                        }
+                        textToShare+="\n"+attendenceListModel.pinNo;
+                    }
+                }
+            }
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        }
     }
 }
