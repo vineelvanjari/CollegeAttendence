@@ -253,7 +253,6 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             });
         }
         else {
-            dialog.show();
             LinearLayout commonDialogBox;
             commonDialogBox=dialog.findViewById(R.id.commonDialogBox);
            commonDialogBox.setVisibility(View.GONE);
@@ -261,7 +260,7 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                 ArrayList<AttendencePerDayModel> columnData=dataBase.checkColumnList(TABLE_NAME,"_"+Date1.getText().toString());
                 Dialog dialog1 = new Dialog(context,R.style.Dialogbox_border);
                 dialog1.setContentView(R.layout.attendence_per_day);
-                dialog1.show();
+
                 ListView listView = dialog1.findViewById(R.id.attendence_per_day);
 
                 if(columnData.size()>0){
@@ -288,13 +287,14 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
 
                         }
                     });
+                    dialog1.show();
                 }
                 else
                     Toast.makeText(context, "No attendence on this date", Toast.LENGTH_SHORT).show();
             });
+
         }
-
-
+        dialog.show();
     }
     catch (Exception ex){
         Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show();
