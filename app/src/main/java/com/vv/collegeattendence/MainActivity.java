@@ -89,7 +89,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText (this, "Enter Subject Name", Toast.LENGTH_SHORT).show();
                     } else if (isFirstCharDigit(subjectName)) {
                         Toast.makeText(this, "1st number shouldn't be a number", Toast.LENGTH_SHORT).show();
-                    } else
+                    }
+                    else if (!containsSpecialCharacters(subjectName)) {
+                        Toast.makeText(this, "Table Name should contain a-z or  0-9  or _  or $ ", Toast.LENGTH_SHORT).show();
+                    }
+                    else
                     {
                         subjectName=subjectName.replaceAll("\\s+", "\\$");
                         semisterString =semisterString.replaceAll("\\s+", "\\$");
@@ -169,11 +173,11 @@ public class MainActivity extends AppCompatActivity {
               studentDataDownload.add(data);
               str.append(data).append(" ");
           }
-          String sNo=studentDataDownload.get(0);
-          String name = studentDataDownload.get(1);
-          String pinNO = studentDataDownload.get(2);
+          String name = studentDataDownload.get(0);
+          String pinNO = studentDataDownload.get(1);
+          String parentsNumber=studentDataDownload.get(2);
 
-          if(!dataBase.insertSubject(TABLE_NAME,sNo,name,pinNO))
+          if(!dataBase.insertSubject(TABLE_NAME,parentsNumber,name,pinNO))
               Toast.makeText(this, "added failed", Toast.LENGTH_SHORT).show();
           arrayList=dataBase.getSubjects();
           adapter = new SubjectRecycleAdapter(this,arrayList);
@@ -201,5 +205,8 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.setting, menu);
         return true;
     }
-
+    public boolean containsSpecialCharacters(String input) {
+        String regex = "^[a-zA-Z0-9_$]*$";
+        return input.matches(regex);
+    }
 }

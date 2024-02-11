@@ -137,7 +137,7 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             datePickerDialog.show();
         });
         if(flag) {
-
+            NOOFPeriodsET.setText("1");
             hourPickerStart = dialog.findViewById(R.id.hourPickerStart);
             minutePickerStart = dialog.findViewById(R.id.minutePickerStart);
             amPmToggleStart = dialog.findViewById(R.id.amPmToggleStart);
@@ -188,10 +188,8 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
             next.setOnClickListener(a ->{
                  selectedHour = hourPickerStart.getValue();
                  selectedMinute = minutePickerStart.getValue();
-
                 amPm=String.valueOf(amPmToggleStart.getValue()).equals("0")?"AM":"PM";
                 startTime = String.format("%02d_%02d_%s", selectedHour, selectedMinute, amPm);
-                
                if(endTimeSwitch.isChecked()){
                     int noOfPeriods=1;
                     if(!NOOFPeriodsET.getText().toString().trim().isEmpty()){

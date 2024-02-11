@@ -23,100 +23,100 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:columnCount="3">
+
         <TextView
-            android:text="S NO"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:textSize="@dimen/_14sdp"
-            android:textStyle="bold"
-            />
+
+        android:text="PIN NO"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
+        />
         <TextView
-            android:text=":"
-            android:layout_width="@dimen/_20sdp"
-            android:textStyle="bold"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:gravity="center"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:textSize="@dimen/_20sdp"/>
+        android:text=":"
+        android:layout_width="@dimen/_20sdp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:textSize="@dimen/_20sdp"/>
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:hint="ENTER S NO"
-            >
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:hint="ENTER PIN NO"
+        >
             <EditText
-                android:inputType="text"
-                android:id="@+id/sno"
-                android:textSize="@dimen/_14sdp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            android:inputType="text"
+            android:id="@+id/pinNo"
+            android:textSize="@dimen/_14sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-
-            android:text="PIN NO"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
+        android:text="NAME"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
+        />
+        <TextView
+        android:text=":"
+        android:layout_width="@dimen/_20sdp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:textSize="@dimen/_20sdp"/>
+        <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:hint="ENTER NAME"
+        >
+            <EditText
+            android:inputType="text"
+            android:id="@+id/name"
             android:textSize="@dimen/_14sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:text="PARENT NUMBER"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/_14sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
             android:textStyle="bold"
             />
         <TextView
             android:text=":"
             android:layout_width="@dimen/_20sdp"
             android:textStyle="bold"
-            android:gravity="center"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
             android:layout_marginHorizontal="@dimen/_10sdp"
             android:textSize="@dimen/_20sdp"/>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="@dimen/_150sdp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_10sdp"
-            android:hint="ENTER PIN NO"
+            android:hint="ENTER PARENT NUMBER"
             >
             <EditText
-                android:inputType="text"
-                android:id="@+id/pinNo"
+                android:inputType="number"
+                android:id="@+id/parentNumber"
                 android:textSize="@dimen/_14sdp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-           />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:text="NAME"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:textSize="@dimen/_14sdp"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:text=":"
-            android:layout_width="@dimen/_20sdp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:textSize="@dimen/_20sdp"/>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:hint="ENTER NAME"
-            >
-            <EditText
-                android:inputType="text"
-                android:id="@+id/name"
-                android:textSize="@dimen/_14sdp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                />
         </com.google.android.material.textfield.TextInputLayout>
     </GridLayout>
     <Button

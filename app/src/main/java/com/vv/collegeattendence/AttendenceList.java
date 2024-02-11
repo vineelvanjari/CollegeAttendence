@@ -137,7 +137,7 @@ public class AttendenceList extends AppCompatActivity{
 
                              }
                              boolean flagCH=flag;
-                             if(edit1==1)
+                             if(  edit1==1)
                                  flagCH=!flag;
                                 adapter  = new AttendenceRecycleAdapter(AttendenceList.this,arrayList,date,"checkAll",TABLE_NAME,finalDate,flagCH);
                             recyclerView.setAdapter(adapter);
@@ -198,7 +198,7 @@ public class AttendenceList extends AppCompatActivity{
                             textToShare+="\n present List";
                             once=false;
                         }
-                        textToShare+="\n"+attendenceListModel.pinNo;
+                        textToShare+="\n"+attendenceListModel.pinNo+" "+attendenceListModel.parentsNumber;
                     }
                 }
             }
@@ -211,7 +211,7 @@ public class AttendenceList extends AppCompatActivity{
                             textToShare+="\n absent List";
                             once=false;
                         }
-                        textToShare+="\n"+attendenceListModel.pinNo;
+                        textToShare+="\n"+attendenceListModel.pinNo+" "+attendenceListModel.parentsNumber;
                     }
                 }
             }

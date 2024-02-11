@@ -60,12 +60,14 @@ public class settings extends AppCompatActivity {
             presentSwitch.setChecked(true);
         if(shareAttendance.getBoolean("absent",true))
             absentSwitch.setChecked(true);
-        if(shareAttendance.getBoolean("endTime",true)){
+        if(shareAttendance.getBoolean("endTime",false)){
             endTimeSwitch.setChecked(true);
             endTimeMethod(true);
         }
+
         else {
             endTimeMethod(false);
+            endTimeSwitch.setChecked(false);
         }
 
 
@@ -173,7 +175,7 @@ public class settings extends AppCompatActivity {
             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
             File file = new File(folder, "Example.CSV");
-            SubjectRecycleAdapter.writeTextData(file,"sno,studentname,pinno");
+            SubjectRecycleAdapter.writeTextData(file,"studentName,pinNo,parentsMobileNo");
             Toast.makeText(this, "Example.csv downloded", Toast.LENGTH_SHORT).show();
         });
     }
@@ -199,7 +201,6 @@ public class settings extends AppCompatActivity {
                     return String.format("%02d", value);
                 }
             });
-
             minutePicker.setFormatter(new NumberPicker.Formatter() {
                 @Override
                 public String format(int value) {
@@ -210,9 +211,7 @@ public class settings extends AppCompatActivity {
         else {
             linearLayout.setVisibility(View.GONE);
         }
-
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

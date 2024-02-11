@@ -31,7 +31,7 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
 
     String TABLE_NAME;
     boolean flag=false;
-    String sno,pin,name;
+    String parentNumber,pin,name;
     boolean showEdit;
 
 
@@ -59,14 +59,14 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
     public void onBindViewHolder(@NonNull ViewHolder holder, int  position) {
         try {
             DataBase database = new DataBase(context);
-            sno=arrayList.get(position).sno;
+            parentNumber=arrayList.get(position).parentsNumber;
             pin=arrayList.get(position).pinNo;
+            int id=arrayList.get(position).id;
             holder.pinNO.setText(pin);
-            holder.sno.setText(sno+") ");
+            holder.sno.setText(id+")");
             if(showEdit){
                 holder.checkBox.setEnabled(false);
             }
-            int id=arrayList.get(position).id;
             name= arrayList.get(position).name;
             if (name.length() < 15) {
                 // Calculate the number of spaces needed
@@ -122,23 +122,23 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    sno=arrayList.get(position).sno;
+                    parentNumber=arrayList.get(position).parentsNumber;
                     pin=arrayList.get(position).pinNo;
                     name= arrayList.get(position).name;
                     String  oldPin=pin;
                     Dialog dialog = new Dialog(context,R.style.Dialogbox_border);
                     dialog.setContentView(R.layout.add_student);
-                    EditText snoET,pinNoET,nameET;
+                    EditText parentNumberET,pinNoET,nameET;
                     Button add;
                     TextView titleTV=dialog.findViewById(R.id.title);
 
-                    snoET=dialog.findViewById(R.id.sno);
+                    parentNumberET=dialog.findViewById(R.id.parentNumber);
                     pinNoET=dialog.findViewById(R.id.pinNo);
                     nameET=dialog.findViewById(R.id.name);
                     add=dialog.findViewById(R.id.add);
                     add.setText("UPDATE");
                     titleTV.setText("EDIT STUDENT");
-                    snoET.setText(sno);
+                    parentNumberET.setText(parentNumber);
                     pinNoET.setText(pin);
                     nameET.setText(name.trim());
                     dialog.findViewById(R.id.cancel).setOnClickListener(va ->{
@@ -146,15 +146,15 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
                     });
 
                     add.setOnClickListener(a ->{
-                        sno=snoET.getText().toString().trim();
+                        parentNumber=parentNumberET.getText().toString().trim();
                         pin=pinNoET.getText().toString().trim();
                         name=nameET.getText().toString().trim();
-                        if(sno.isEmpty() || pin.isEmpty() || name.isEmpty()){
-                            if(sno.isEmpty() && pin.isEmpty() && name.isEmpty()) {
+                        if(parentNumber.isEmpty() || pin.isEmpty() || name.isEmpty()){
+                            if(parentNumber.isEmpty() && pin.isEmpty() && name.isEmpty()) {
                                 Toast.makeText(context, "Enter all fields", Toast.LENGTH_SHORT).show();
                             }
-                            else if(sno.isEmpty()) {
-                                Toast.makeText(context, "Enter S NO", Toast.LENGTH_SHORT).show();
+                            else if(parentNumber.isEmpty()) {
+                                Toast.makeText(context, "Enter PARENT NUMBER", Toast.LENGTH_SHORT).show();
                             }
                             else if(pin.isEmpty()) {
                                 Toast.makeText(context, "Enter PIN NO", Toast.LENGTH_SHORT).show();
@@ -165,13 +165,13 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
                         }
                         else {
                             if(oldPin.equals(pin)){
-                                if(database.updateStudent(TABLE_NAME,sno,name,pin,id)) {
+                                if(database.updateStudent(TABLE_NAME,parentNumber,name,pin,id)) {
                                     Toast.makeText(context, "Student Updated Successfully", Toast.LENGTH_SHORT).show();
                                     int i=0;
                                     if(flag) {
                                         i=1;
                                     }
-                                    arrayList.set(position,new AttendenceListModel(name,pin,sno,id,i));
+                                    arrayList.set(position,new AttendenceListModel(name,pin,parentNumber,id,i));
                                     notifyItemChanged(position);
                                     dialog.dismiss();
                                 }
@@ -180,13 +180,13 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
                                 }
                             }
                             else if(!database.checkStudentPinNO(TABLE_NAME,pin) ){
-                                if(database.updateStudent(TABLE_NAME,sno,name,pin,id)) {
+                                if(database.updateStudent(TABLE_NAME,parentNumber,name,pin,id)) {
                                     Toast.makeText(context, "Student Updated Successfully", Toast.LENGTH_SHORT).show();
                                     int i=0;
                                     if(flag) {
                                         i=1;
                                     }
-                                    arrayList.set(position,new AttendenceListModel(name,pin,sno,id,i));
+                                    arrayList.set(position,new AttendenceListModel(name,pin,parentNumber,id,i));
                                     notifyItemChanged(position);
                                     dialog.dismiss();
                                 }

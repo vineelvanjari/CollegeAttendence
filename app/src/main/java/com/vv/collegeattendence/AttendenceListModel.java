@@ -2,15 +2,15 @@ package com.vv.collegeattendence;
 public class AttendenceListModel {
     public String name;
     public String pinNo;
-    public String sno;
+    public String parentsNumber;
     public int attendence;
 
     public int id;
 
-    AttendenceListModel(String name,String pinNo,String sno,int id,int attendence){
+    AttendenceListModel(String name,String pinNo,String parentsNumber,int id,int attendence){
         this.name=name;
         this.pinNo = pinNo;
-        this.sno=sno;
+        this.parentsNumber=parentsNumber;
         this.id=id;
         this.attendence=attendence;
     }

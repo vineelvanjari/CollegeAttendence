@@ -20,9 +20,9 @@ public class DataBase extends SQLiteOpenHelper {
     SQLiteDatabase dbw = this.getWritableDatabase();
     SQLiteDatabase dbr = this.getReadableDatabase();
     public  static  String ID="id";
-    public static String SNO="sNo";
     public static String STUDENT_NAME="studentName";
     public static String PIN_NO = "pinNo";
+    public static String PARENTS_MOBILE_NO = "parentsMobileNo";
     Context context1;
     public DataBase(@Nullable Context context) {
         super(context, "SubjectDB", null, 1);
@@ -33,7 +33,7 @@ public class DataBase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
     public  void createTable(String TABLE_NAME){
-        dbw.execSQL("create table  "+TABLE_NAME+ "( "+ ID+" integer primary key autoincrement , "+SNO+" text,"+STUDENT_NAME+" text,"+PIN_NO+" text)");
+        dbw.execSQL("create table  "+TABLE_NAME+ "( "+ ID+" integer primary key autoincrement , "+STUDENT_NAME+" text,"+PIN_NO+" text," +PARENTS_MOBILE_NO +")");
     }
     public  boolean isTableExist(String TABLE_NAME){
         Cursor cursor = dbw.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name=?",new String[] {TABLE_NAME} );
@@ -44,8 +44,8 @@ public class DataBase extends SQLiteOpenHelper {
     }
     public void changeTableName(String OLD_TABLE_NAME , String NEW_TABLE_NAME){
         try {
-            String columnNamesStart = SNO + "," + STUDENT_NAME + "," + PIN_NO;
-            String columnNames = SNO + " text ," + STUDENT_NAME + " text ," + PIN_NO + " text ";
+            String columnNamesStart = STUDENT_NAME + "," + PIN_NO + ","+PARENTS_MOBILE_NO;
+            String columnNames = STUDENT_NAME + " text ," + PIN_NO + " text ,"+PARENTS_MOBILE_NO + " text";
             Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + OLD_TABLE_NAME + ")", null);
             cursor.moveToFirst();
             cursor.moveToNext();
@@ -72,20 +72,20 @@ public class DataBase extends SQLiteOpenHelper {
         dbw.execSQL("drop table "+TABLE_NAME);
     }
 
-    public boolean insertSubject (String TABLE_NAME,String sNo,String studentName,String pinNo){
+    public boolean insertSubject (String TABLE_NAME,String parentsNumber,String studentName,String pinNO){
         ContentValues cv = new ContentValues();
-        cv.put(SNO,sNo);
+        cv.put(PARENTS_MOBILE_NO,parentsNumber);
         cv.put(STUDENT_NAME,studentName);
-        cv.put(PIN_NO,pinNo);
+        cv.put(PIN_NO,pinNO);
         long flag= dbw.insert(TABLE_NAME,null,cv);
         if(flag!=-1)
             return true;
         else
             return false;
     }
-    public boolean updateStudent (String TABLE_NAME,String sNo,String studentName,String pinNo,int id){
+    public boolean updateStudent (String TABLE_NAME,String parentsNumber,String studentName,String pinNo,int id){
         ContentValues cv = new ContentValues();
-        cv.put(SNO,sNo);
+        cv.put(PARENTS_MOBILE_NO,parentsNumber);
         cv.put(STUDENT_NAME,studentName);
         cv.put(PIN_NO,pinNo);
         long flag= dbw.update(TABLE_NAME,cv,ID+"="+id,null);
@@ -114,17 +114,17 @@ public class DataBase extends SQLiteOpenHelper {
         return  arrayList;
     }
     public ArrayList<AttendenceListModel> getAttendenceList(String TABLE_NAME,String date){
-        Cursor cursor= dbr.rawQuery("select pinNo,sNo,id,"+date+" ,"+STUDENT_NAME+" from "+TABLE_NAME,null);
+        Cursor cursor= dbr.rawQuery("select pinNo,"+PARENTS_MOBILE_NO+",id,"+date+" ,"+STUDENT_NAME+" from "+TABLE_NAME,null);
         ArrayList<AttendenceListModel> arrayList = new ArrayList<>();
         cursor.moveToFirst();
         if(cursor.getCount()>0){
             do{
                 int id = cursor.getInt(2);
                 String pinNO=cursor.getString(0);
-                String sno=cursor.getString(1);
+                String parentsNumber=cursor.getString(1);
                 int attendenceValue =cursor.getInt(3);
                 String name = cursor.getString(4);
-                AttendenceListModel attendenceListModel = new AttendenceListModel(name,pinNO,sno,id,attendenceValue);
+                AttendenceListModel attendenceListModel = new AttendenceListModel(name,pinNO,parentsNumber,id,attendenceValue);
                 arrayList.add(attendenceListModel);
             }while (cursor.moveToNext());
         }
@@ -163,7 +163,7 @@ public class DataBase extends SQLiteOpenHelper {
         ArrayList<StringBuffer> studentList = new ArrayList<>();
         int check=0;
         try{
-            String columnNamesInDB=SNO+","+STUDENT_NAME+","+PIN_NO;
+            String columnNamesInDB=STUDENT_NAME+","+PIN_NO+","+PARENTS_MOBILE_NO;
             ArrayList<String> dateList = new ArrayList<>();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy", Locale.getDefault());
             Date startDateObj,endDateObj;
@@ -194,28 +194,27 @@ public class DataBase extends SQLiteOpenHelper {
                 Log.d("columnNames12", String.valueOf(columnNames));
                 studentList.add(columnNames);
                 Cursor cursor = dbw.rawQuery("select "+columnNamesInDB+" from "+TABLE_NAME,null);
+                Log.d("columnCount",columnNamesInDB);
                 cursor.moveToFirst();
                 do {
                     StringBuffer str = new StringBuffer();
-                    for (int i=0;(i<cursor.getColumnCount()-1);i++){
-                        if(i>2){
-                            if(cursor.getString(i).equals("1")){
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        if (i > 2) {
+                            if (cursor.getString(i).equals("1")) {
                                 str.append("present,");
-                            }
-                            else if(cursor.getString(i).equals("0")) {
+                            } else if (cursor.getString(i).equals("0")) {
                                 str.append("absent,");
-                            }
-                            else {
+                            } else {
                                 str.append(cursor.getString(i)).append(",");
                             }
-                        }
-                        else {
+                        } else {
                             str.append(cursor.getString(i)).append(",");
                         }
                     }
                     studentList.add(str);
-                    Log.d("columnCount",str.toString());
-                }while (cursor.moveToNext());
+                    Log.d("columnCount", str.toString());
+                } while (cursor.moveToNext());
+
             }
 
         }catch (Exception ex){
@@ -260,8 +259,8 @@ public class DataBase extends SQLiteOpenHelper {
     }
     public  void deleteColumn(String TABLE_NAME,String columnName){
         try {
-                String columnNamesStart=SNO+","+STUDENT_NAME+","+PIN_NO;
-                String columnNames=SNO+" text ,"+STUDENT_NAME+" text ,"+PIN_NO+" text ";
+                String columnNamesStart=STUDENT_NAME+","+PIN_NO+","+PARENTS_MOBILE_NO;
+                String columnNames=STUDENT_NAME+" text ,"+PIN_NO+" text ,"+PARENTS_MOBILE_NO;
                 Cursor cursor = dbw.rawQuery("PRAGMA table_info(" + TABLE_NAME + ")", null);
                 cursor.moveToFirst();
                 cursor.moveToNext();

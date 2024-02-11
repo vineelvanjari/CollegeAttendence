@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class StudentDialogBox extends AppCompatActivity {
-    String snoString,pinNoString,nameString;
+    String parentNumberString,pinNoString,nameString;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +26,7 @@ public class StudentDialogBox extends AppCompatActivity {
             DataBase database = new DataBase(contextM);
             Dialog dialog = new Dialog(contextM,R.style.Dialogbox_border);
             dialog.setContentView(R.layout.add_student);
-            EditText snoET,pinNoET,nameET;
+            EditText parentNumberET,pinNoET,nameET;
             Button add;
             ImageView delete;
             delete=dialog.findViewById(R.id.delete);
@@ -35,20 +35,20 @@ public class StudentDialogBox extends AppCompatActivity {
             });
             delete.setVisibility(View.GONE);
             TextView titleTV=dialog.findViewById(R.id.title);
-            snoET=dialog.findViewById(R.id.sno);
+            parentNumberET=dialog.findViewById(R.id.parentNumber);
             pinNoET=dialog.findViewById(R.id.pinNo);
             nameET=dialog.findViewById(R.id.name);
             add=dialog.findViewById(R.id.add);
                 titleTV.setText("ADD STUDENT");
                 add.setOnClickListener(v ->{
-                    snoString=snoET.getText().toString().trim();
+                    parentNumberString=parentNumberET.getText().toString().trim();
                     pinNoString=pinNoET.getText().toString().trim();
                     nameString=nameET.getText().toString().trim();
-                    if(snoString.isEmpty() || pinNoString.isEmpty() || nameString.isEmpty()){
-                        if(snoString.isEmpty() && pinNoString.isEmpty() && nameString.isEmpty())
+                    if(parentNumberString.isEmpty() || pinNoString.isEmpty() || nameString.isEmpty()){
+                        if(parentNumberString.isEmpty() && pinNoString.isEmpty() && nameString.isEmpty())
                             Toast.makeText(contextM, "Enter all fields", Toast.LENGTH_SHORT).show();
-                        else if(snoString.isEmpty())
-                            Toast.makeText(contextM, "Enter S NO", Toast.LENGTH_SHORT).show();
+                        else if(parentNumberString.isEmpty())
+                            Toast.makeText(contextM, "Enter PARENT NUMBER", Toast.LENGTH_SHORT).show();
                         else if(pinNoString.isEmpty())
                             Toast.makeText(contextM, "Enter PIN NO", Toast.LENGTH_SHORT).show();
                         else
@@ -56,7 +56,7 @@ public class StudentDialogBox extends AppCompatActivity {
                     }
                     else {
                         if(!database.checkStudentPinNO(TABLE_NAME,pinNoString)){
-                            if(database.insertSubject(TABLE_NAME,snoString,nameString,pinNoString)) {
+                            if(database.insertSubject(TABLE_NAME,parentNumberString,nameString,pinNoString)) {
                                 Toast.makeText(contextM, "Student Added Successfully", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             }

@@ -143,12 +143,12 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
                             Spinner semisterSpinner = dialog.findViewById(R.id.semister);
                             Spinner sectionSpinner = dialog.findViewById(R.id.section);
                             ArrayList<String> semisterAL = new ArrayList<>();
-                            semisterAL.add("1st semister");
-                            semisterAL.add("2nd semister");
-                            semisterAL.add("3rd semister");
-                            semisterAL.add("4th semister");
-                            semisterAL.add("5th semister");
-                            semisterAL.add("6th semister");
+                            semisterAL.add("1st semester");
+                            semisterAL.add("2nd semester");
+                            semisterAL.add("3rd semester");
+                            semisterAL.add("4th semester");
+                            semisterAL.add("5th semester");
+                            semisterAL.add("6th semester");
                             ArrayAdapter<String> semisterAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, semisterAL);
                             semisterSpinner.setAdapter(semisterAdapter);
                             ArrayList<String> sectionAL = new ArrayList<>();
@@ -157,6 +157,7 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
                             ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, sectionAL);
                             sectionSpinner.setAdapter(sectionAdapter);
                             String spinnerString = semister.replace("$"," ");
+                            Log.d("semisterName",spinnerString);
                             int swapInt = semisterAL.indexOf(spinnerString);
                             String swapString = semisterAL.get(0);
                             semisterAL.set(0, spinnerString);
