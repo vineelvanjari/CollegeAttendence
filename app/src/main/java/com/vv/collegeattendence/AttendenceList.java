@@ -211,7 +211,7 @@ public class AttendenceList extends AppCompatActivity{
                             textToShare+="\n absent List";
                             once=false;
                         }
-                        textToShare+="\n"+attendenceListModel.pinNo+" "+attendenceListModel.parentsNumber;
+                        textToShare+="\n"+attendenceListModel.pinNo+"\t"+attendenceListModel.parentsNumber;
                     }
                 }
             }
