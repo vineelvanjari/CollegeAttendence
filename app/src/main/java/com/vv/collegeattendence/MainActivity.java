@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     semisterString =  semisterSpinner.getSelectedItem().toString();
                     sectionString =  section.getSelectedItem().toString();
                     subjectName=editText.getText().toString().trim();
+                    subjectName=subjectName.replaceAll("\\s+", "\\$");
                     if(subjectName.isEmpty()){
                         Toast.makeText (this, "Enter Subject Name", Toast.LENGTH_SHORT).show();
                     } else if (isFirstCharDigit(subjectName)) {
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
     public boolean containsSpecialCharacters(String input) {
-        String regex = "^[a-zA-Z0-9_$]*$";
+        String regex = "^[a-zA-Z0-9_$ ]*$";
         return input.matches(regex);
     }
 }
