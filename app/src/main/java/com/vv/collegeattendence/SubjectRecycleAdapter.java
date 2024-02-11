@@ -327,7 +327,7 @@ public class SubjectRecycleAdapter extends RecyclerView.Adapter<SubjectRecycleAd
             dots=itemView.findViewById(R.id.dots);
         }
     }
-    private void writeTextData(File file, String data) {
+   static public void writeTextData(File file, String data) {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(file);

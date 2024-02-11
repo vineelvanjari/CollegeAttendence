@@ -105,6 +105,19 @@
                 />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/downloadExample"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:text="Download CSV file format"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingRight="@dimen/_10sdp"
+            android:background="@drawable/border_line"
+            android:drawableEnd="@drawable/download"
+            />
+
     </LinearLayout>
 
 <!--    <LinearLayout

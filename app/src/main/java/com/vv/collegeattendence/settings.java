@@ -3,11 +3,17 @@ package com.vv.collegeattendence;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +23,19 @@ import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class settings extends AppCompatActivity {
     NumberPicker hourPicker, minutePicker;
     SharedPreferences shareAttendance;
+    private final int EXTERNAL_STORAGE_PERMISSION_CODE = 23;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        hourPicker = findViewById(R.id.hourPicker);
+        minutePicker = findViewById(R.id.minutePicker);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle("Settings");
         setSupportActionBar(toolbar);
@@ -37,9 +49,6 @@ public class settings extends AppCompatActivity {
         Switch presentSwitch = (Switch) findViewById(R.id.present);
         Switch absentSwitch = (Switch) findViewById(R.id.absent);
         Switch endTimeSwitch = (Switch) findViewById(R.id.endTimeSwitch);
-        hourPicker = findViewById(R.id.hourPicker);
-        minutePicker = findViewById(R.id.minutePicker);
-
         shareAttendenceSwitch.setTrackTintList(trackColorStateList);
         presentSwitch.setTrackTintList(trackColorStateList);
         absentSwitch.setTrackTintList(trackColorStateList);
@@ -152,6 +161,21 @@ public class settings extends AppCompatActivity {
                 Log.d("picker",""+newVal);
             }
         });
+        findViewById(R.id.downloadExample).setOnClickListener(v ->{
+            if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        EXTERNAL_STORAGE_PERMISSION_CODE);
+            }
+
+            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+            File file = new File(folder, "Example.CSV");
+            SubjectRecycleAdapter.writeTextData(file,"sno,studentname,pinno");
+            Toast.makeText(this, "Example.csv downloded", Toast.LENGTH_SHORT).show();
+        });
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -186,6 +210,11 @@ public class settings extends AppCompatActivity {
         else {
             linearLayout.setVisibility(View.GONE);
         }
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

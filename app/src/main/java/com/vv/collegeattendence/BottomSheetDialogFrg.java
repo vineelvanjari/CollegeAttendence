@@ -284,7 +284,6 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
                             ((Activity) context).startActivity(intent);
                             dialog.dismiss();
                             ((Activity) context).finish();
-
                         }
                     });
                     dialog1.show();
