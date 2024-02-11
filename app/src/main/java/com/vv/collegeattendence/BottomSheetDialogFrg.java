@@ -59,7 +59,6 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View viewRef = inflater.inflate(R.layout.bottom_sheet_dialog_box, container, false);
         viewRef.findViewById(R.id.addAttendence).setOnClickListener(v ->{
-
             Dialog(viewRef,true);
             dismiss();
         });
@@ -82,12 +81,13 @@ public class BottomSheetDialogFrg extends BottomSheetDialogFragment {
         shareAttendance = context.getSharedPreferences("shareAttendance",MODE_PRIVATE);
         NOOFPeriodsLayout=dialog.findViewById(R.id.NOOFPeriodsLayout);
         linearLayout = dialog.findViewById(R.id.end_time_linear_layout);
-        if(shareAttendance.getBoolean("endTime",true)){
+        if(shareAttendance.getBoolean("endTime",false)){
             endTimeSwitch.setChecked(true);
             endTimeMethod(false);
         }
         else {
             endTimeMethod(true);
+            endTimeSwitch.setChecked(false);
             endTimeSwitch.setVisibility(View.GONE);
         }
         endTimeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
