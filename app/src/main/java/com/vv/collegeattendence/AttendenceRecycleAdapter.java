@@ -85,7 +85,7 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
                     if (firstLine.length() + word.length() + 1 <= 15) {
                         firstLine.append(word).append(" ");
                     } else {
-                        nextLine.append(word).append(" ");
+                        nextLine.append("").append(word);
                     }
                 }
                 while (firstLine.length()<=15) {

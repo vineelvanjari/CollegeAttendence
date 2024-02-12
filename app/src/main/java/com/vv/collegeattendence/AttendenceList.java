@@ -16,10 +16,14 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +51,9 @@ public class AttendenceList extends AppCompatActivity{
             subjectNameTV=findViewById(R.id.subjectNameRecycle);
             sectionTV=findViewById(R.id.section);
             dateTV=findViewById(R.id.date);
+            Button submit = findViewById(R.id.submit);
+            RecyclerView recyclerView = findViewById(R.id.attendenceRecycle);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
             String TABLE_NAME=getIntent().getStringExtra("tableName");
             String[] TableNameSplit = TABLE_NAME.split("_");
             String subject= TableNameSplit[0].replace("$"," ");
@@ -60,8 +67,6 @@ public class AttendenceList extends AppCompatActivity{
             sectionTV.setText(section);
             dateTV.setText(date);
             String finalDate="_"+date+startEndTime;
-            RecyclerView recyclerView = findViewById(R.id.attendenceRecycle);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
             DataBase database = new DataBase(this);
             arrayList= database.getAttendenceList(TABLE_NAME,finalDate);
             if(arrayList.size()>0){
@@ -71,13 +76,18 @@ public class AttendenceList extends AppCompatActivity{
             findViewById(R.id.exitbutton).setOnClickListener( v-> {
                 backPress();
             });
-            findViewById(R.id.submit).setOnClickListener(v ->{
+            if(flag && edit1==0){
+                submit.setVisibility(View.GONE);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) recyclerView.getLayoutParams();
+                params.bottomMargin = 0;
+                recyclerView.setLayoutParams(params);
+            }
+             submit.setOnClickListener(v ->{
                 ArrayList<CheckBoxModel> checkBoxArrayList = adapter.CheckBoxArrayList;
                 for(int i=0;i<checkBoxArrayList.size();i++){
                     database.inserDateValue(TABLE_NAME,finalDate,checkBoxArrayList.get(i).id,checkBoxArrayList.get(i).presentAbsent);
                 }
-                if(!flag){
-                    if(shareAttendance.getBoolean("shareAtt",true)){
+                    if(shareAttendance.getBoolean("shareAtt",true) || edit1==1){
                         arrayList=database.getAttendenceList(TABLE_NAME,finalDate);
                         backPress();
                         shareAttendenc(subject,startEndTime);
@@ -85,11 +95,6 @@ public class AttendenceList extends AppCompatActivity{
                     else {
                         backPress();
                     }
-                }
-                else
-                    backPress();
-
-
             });
 
             findViewById(R.id.dots).setOnClickListener(v ->{
@@ -161,6 +166,10 @@ public class AttendenceList extends AppCompatActivity{
                              MenuItem itemToRemove1 = popupMenu.getMenu().findItem(R.id.shareAttendence);
                              popupMenu.getMenu().removeItem(itemToRemove1.getItemId());
                              edit1=1;
+                             submit.setVisibility(View.VISIBLE);
+                             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) recyclerView.getLayoutParams();
+                             params.bottomMargin = 180;
+                             recyclerView.setLayoutParams(params);
                          } else if (id==R.id.shareAttendence) {
                            shareAttendenc(subject,startEndTime);
                          }
@@ -172,6 +181,7 @@ public class AttendenceList extends AppCompatActivity{
         }
         catch (Exception e){
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d("errror",e.toString());
         }
     }
     @Override
@@ -195,10 +205,10 @@ public class AttendenceList extends AppCompatActivity{
                     AttendenceListModel attendenceListModel = arrayList.get(i);
                     if(attendenceListModel.attendence==1){
                         if(once){
-                            textToShare+="\n present List";
+                            textToShare+="\n present List\t\t\t\t\t\tparents Number";
                             once=false;
                         }
-                        textToShare+="\n"+attendenceListModel.pinNo+" "+attendenceListModel.parentsNumber;
+                        textToShare+="\n"+attendenceListModel.pinNo+"\t\t\t\t"+attendenceListModel.parentsNumber;
                     }
                 }
             }
@@ -208,10 +218,10 @@ public class AttendenceList extends AppCompatActivity{
                     AttendenceListModel attendenceListModel = arrayList.get(i);
                     if(attendenceListModel.attendence==0){
                         if(once){
-                            textToShare+="\n absent List";
+                            textToShare+="\n absent List\t\t\t\t\t\t\tparents Number";
                             once=false;
                         }
-                        textToShare+="\n"+attendenceListModel.pinNo+"\t"+attendenceListModel.parentsNumber;
+                        textToShare+="\n"+attendenceListModel.pinNo+"\t\t\t\t"+attendenceListModel.parentsNumber;
                     }
                 }
             }

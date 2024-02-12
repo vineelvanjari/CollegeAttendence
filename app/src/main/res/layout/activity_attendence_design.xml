@@ -29,7 +29,7 @@
             android:text="1234567890124"
             android:maxEms="15"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="left|center"
             android:textStyle="bold"
             android:fontFamily="monospace"
             android:textSize="@dimen/_14sdp"
