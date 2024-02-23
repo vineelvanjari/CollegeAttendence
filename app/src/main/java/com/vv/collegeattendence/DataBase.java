@@ -69,7 +69,7 @@ public class DataBase extends SQLiteOpenHelper {
         }
     }
     public void deleteTable(String TABLE_NAME){
-        dbw.execSQL("drop table "+TABLE_NAME);
+        dbw.execSQL("drop table if exists "+TABLE_NAME);
     }
 
     public boolean insertSubject (String TABLE_NAME,String parentsNumber,String studentName,String pinNO){

@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                             if(!dataBase.isTableExist(TABLE_NAME)){
                                 dataBase.createTable(TABLE_NAME);
                                 while ((line = reader.readLine()) != null) {
+
                                     insertStudentData(line);
                                 }
                             }
@@ -166,26 +167,33 @@ public class MainActivity extends AppCompatActivity {
     private void insertStudentData(String stuData) {
       try{
           StringTokenizer studentData = new StringTokenizer(stuData, ",");
-          ArrayList<String> studentDataDownload = new ArrayList<>();
-
-          StringBuilder str = new StringBuilder();
-          while (studentData.hasMoreTokens()) {
-              String data = studentData.nextToken();
-              studentDataDownload.add(data);
-              str.append(data).append(" ");
+          if(studentData.countTokens()==3){
+              ArrayList<String> studentDataDownload = new ArrayList<>();
+              StringBuilder str = new StringBuilder();
+              while (studentData.hasMoreTokens()) {
+                  String data = studentData.nextToken();
+                  studentDataDownload.add(data);
+                  str.append(data).append(" ");
+              }
+              String name = studentDataDownload.get(0);
+              String pinNO = studentDataDownload.get(1);
+              String parentsNumber = studentDataDownload.get(2);
+              if (!dataBase.insertSubject(TABLE_NAME, parentsNumber, name, pinNO))
+                  Toast.makeText(this, "added failed", Toast.LENGTH_SHORT).show();
+              arrayList = dataBase.getSubjects();
+              adapter = new SubjectRecycleAdapter(this, arrayList);
+              recyclerView.setAdapter(adapter);
           }
-          String name = studentDataDownload.get(0);
-          String pinNO = studentDataDownload.get(1);
-          String parentsNumber=studentDataDownload.get(2);
+else {
+    Toast.makeText(this, "csv file not have all the required information of the student !!", Toast.LENGTH_LONG).show();
+    Toast.makeText(this, "Refer the example.csv in the settings", Toast.LENGTH_LONG).show();
+    dataBase.deleteTable(TABLE_NAME);
 
-          if(!dataBase.insertSubject(TABLE_NAME,parentsNumber,name,pinNO))
-              Toast.makeText(this, "added failed", Toast.LENGTH_SHORT).show();
-          arrayList=dataBase.getSubjects();
-          adapter = new SubjectRecycleAdapter(this,arrayList);
-          recyclerView.setAdapter(adapter);
+}
       }
       catch (Exception e){
           Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+          Log.d("exceptionn",e.toString());
       }
     }
 

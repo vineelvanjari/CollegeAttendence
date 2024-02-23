@@ -6,12 +6,13 @@
     android:layout_height="@dimen/_75sdp"
     app:cardCornerRadius="@dimen/_10sdp"
     android:layout_margin="@dimen/_5sdp"
+    android:backgroundTint="#3582F1"
     android:orientation="vertical"
     android:foreground="?attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:src="@drawable/subject_background_img"
         />
     <LinearLayout
@@ -32,12 +33,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_18sdp"
-                android:text="Subject name "
+                android:text="1234567890123456789012345"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:layout_marginLeft="@dimen/_10sdp"
+                android:fontFamily="monospace"
+                android:ems="25"
                 android:textColor="@color/black"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
                 android:textStyle="bold"
                 />
             <LinearLayout
