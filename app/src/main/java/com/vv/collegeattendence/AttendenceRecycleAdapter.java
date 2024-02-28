@@ -79,20 +79,19 @@ public class AttendenceRecycleAdapter extends RecyclerView.Adapter<AttendenceRec
             } else {
                 String[] nameList=name.split(" ");
                 StringBuilder firstLine  = new StringBuilder();
-                StringBuilder nextLine  = new StringBuilder();
+                String nextLine="";
                 String displayName="";
                 for (String word : nameList) {
                     if (firstLine.length() + word.length() + 1 <= 15) {
                         firstLine.append(word).append(" ");
                     } else {
-                        nextLine.append("").append(word);
+                        nextLine+=""+word;
                     }
                 }
                 while (firstLine.length()<=15) {
                     firstLine.append(" ");
                 }
-
-                displayName=firstLine+"\n"+nextLine;
+                displayName=firstLine+"\n"+nextLine.trim();
                 holder.studentName.setText(displayName);
             }
             if((arrayList.get(position).attendence)==1){
